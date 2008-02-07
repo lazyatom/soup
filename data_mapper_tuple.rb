@@ -29,6 +29,7 @@ class Tuple < DataMapper::Base
     super if dirty? or new_record?
   end
   
+  alias_method :destroy, :destroy!
 end
 
 # Create the table with this:

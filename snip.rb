@@ -10,6 +10,7 @@ require 'blankslate'
 # Tuple#save
 # Tuple#name
 # Tuple#value
+# Tuple#destroy
 
 class Snip < BlankSlate
   def self.[](id)
@@ -33,7 +34,7 @@ class Snip < BlankSlate
   end
   
   def destroy
-    each_tuple { |t| t.destroy! }
+    each_tuple { |t| t.destroy }
   end
   
   def reload
