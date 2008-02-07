@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'blankslate'
 
-require 'tuple'
+require 'data_mapper_tuple'
 
 # methods called on Tuple:
 # Tuple.all
