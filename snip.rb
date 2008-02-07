@@ -1,7 +1,4 @@
 require 'rubygems'
-
-require 'data_mapper_tuple'
-
 require 'blankslate'
 
 # methods called on Tuple:
