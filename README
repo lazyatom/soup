@@ -1,4 +1,5 @@
-Soup is a bit of everything, summoned from nothing. Soup is like an imaginary friend - comforting, and will often talk to you, but when you look closely, they don't exist.
+Soup is a bit of everything, summoned from nothing. Soup is like an imaginary friend - comforting,
+ and will often talk to you, but when you look closely, they don't exist.
 
 Terrifying. And so:
 
@@ -19,7 +20,13 @@ Terrifying. And so:
   x.position = "Above my bed!!!"
   x.save
   
-The point is that you can set any attribute on a Snip, and it will be persisted without care. With reckless abandon, really.
+The point is that you can set any attribute on a Snip, and it will be persisted without care. 
+With reckless abandon, really.
+
+The data can be stored using anything - Snip doesn't really care much about the underlying 
+persistence layer. I've written implementations using DataMapper, ActiveRecord and Sequel... 
+there are other implementations of course. Unknowable implementations. 
+Terrifying implementations. You Fool! Warren is Dead!
 
 
 
