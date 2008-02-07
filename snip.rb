@@ -1,10 +1,11 @@
 require 'rubygems'
-require 'blankslate'
 
 require 'data_mapper_tuple'
 
+require 'blankslate'
+
 # methods called on Tuple:
-# Tuple.all
+# Tuple.for_snip(id)
 # Tuple.next_snip_id
 # Tuple#save
 # Tuple#name
@@ -12,7 +13,7 @@ require 'data_mapper_tuple'
 
 class Snip < BlankSlate
   def self.[](id)
-    raise "not found" unless (tuples = Tuple.all(:snip_id => id)).any?
+    raise "not found" unless (tuples = Tuple.for_snip(id)).any?
     snip = Snip.new(:__id => id)
     snip.replace_tuples(tuples)
     snip
@@ -35,7 +36,7 @@ class Snip < BlankSlate
   
   def reload
     return self unless self.id
-    replace_tuples(Tuple.all(:snip_id => id))
+    replace_tuples(Tuple.for_snip(id))
     self
   end
 
