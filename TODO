@@ -1,0 +1,1 @@
+- Add indexes on implementations to tuples.snip_id - since that's how they are typically loaded
