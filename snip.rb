@@ -26,6 +26,7 @@ class Snip < BlankSlate
   end
   
   def save
+    raise "Saving would be pointless - there's no data!" if @tuples.empty?
     set_id_if_necessary
     each_tuple { |t| t.save }
   end
