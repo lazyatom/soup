@@ -10,6 +10,7 @@ require 'blankslate'
 # Tuple#destroy
 
 class Snip < BlankSlate
+  
   def self.[](id)
     raise "not found" unless (tuples = Tuple.for_snip(id)).any?
     snip = Snip.new(:__id => id)
@@ -94,7 +95,8 @@ class Snip < BlankSlate
     if tuple
       tuple.value = value
     else
-      tuple = @tuples[name.to_s] = Tuple.new(:snip_id => self.id, :name => name.to_s, :value => value)
+      attributes = {:snip_id => self.id, :name => name.to_s, :value => value}
+      tuple = @tuples[name.to_s] = Tuple.new(attributes)
     end
     tuple.value
   end

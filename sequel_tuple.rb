@@ -26,4 +26,4 @@ end
   
 # Create the table with this:
 #
-# Item.create_table
+# Tuple.create_table
