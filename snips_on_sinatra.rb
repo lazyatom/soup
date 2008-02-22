@@ -7,11 +7,30 @@ $LOAD_PATH.uniq!
 require 'soup'
 require 'render'
 
-#DataMapper::Persistence.auto_migrate!
-#load 'system_snips.rb'
-#load 'test_snips.rb'
+def bootstrap_data
+  DataMapper::Persistence.auto_migrate!
+  load 'system_snips.rb'
+  load 'test_snips.rb'
+end
 
-system_snip = Snip.find_by_name('system')
+#bootstrap_data
+
+def edit(snip)
+  @snip = snip
+  erb SystemSnip.edit_template  
+end
+
+def raw(snip_name)
+  @snip = Snip.find_by_name(snip_name)
+  Render::Base.new.render(snip_name)
+end
+
+def show(snip_name)
+  @rendered_snip = raw(snip_name)
+  erb SystemSnip.main_template
+end
+
+SystemSnip = Snip.find_by_name('system')
 
 def basic_unsaved_snip
   snip = Snip.new
@@ -22,30 +41,26 @@ def basic_unsaved_snip
 end
 
 get '/' do
-  @snip_name = 'start'
-  @snip = Snip.find_by_name(@snip_name)
-  @rendered_snip = Render::Base.new.render(@snip_name)
-  erb system_snip.main_template
+  show 'start'
 end  
 
 get '/new' do
-  @snip = basic_unsaved_snip
-  erb system_snip.edit_template
+  edit basic_unsaved_snip
 end
 
-get '/:snip' do
+get '/space/:snip' do
   $params = params # store this for the save dyna, basically. hacky. horrible.
-  @snip = Snip.find_by_name(params[:snip])
-  @rendered_snip = Render::Base.new.render(params[:snip])
-  erb system_snip.main_template
+  show params[:snip]
 end
 
-get '/:snip/edit' do 
-  @snip = Snip.find_by_name(params[:snip])
-  erb system_snip.edit_template
+get '/raw/:snip' do
+  raw params[:snip]
 end
 
-get '/:snip/:part' do
+get '/space/:snip/:part' do
   Render::Base.new.render(params[:snip], params[:part])
 end
 
+get '/edit/:snip' do 
+  edit Snip.find_by_name(params[:snip])
+end

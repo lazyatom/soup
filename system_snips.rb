@@ -4,46 +4,64 @@ $LOAD_PATH.uniq!
 require 'soup'
 require 'render'
 
+module Router
+  def link_to(snip_name, part=nil)
+    %{<a href="#{Router.url_to(snip_name, part)}">#{snip_name}</a>}
+  end
+  
+  def url_to(snip_name, part=nil)
+    url = "/space/#{snip_name}"
+    url += "/#{part}" if part
+    url
+  end
+  
+  def edit_link(snip_name, link_text)
+    %[<a href="/edit/#{snip_name}">#{link_text}</a>]
+  end
+  
+  def new_link
+    %[<a href="/new">New</a>]
+  end
+  
+  extend self
+end
+
 dynasnip "edit_link", %{
 class EditSnipLink
   def handle(snip_name, link_text)
-    %[<a href="/\#{snip_name}/edit">\#{link_text}</a>]
+    Router.edit_link(snip_name, link_text)
   end
 end
 EditSnipLink}
 
-dynasnip "link_to", <<-EOF
+dynasnip "link_to", %{
 class Linker
   def handle(snip_name)
-    %{<a href="/\#{snip_name}">\#{snip_name}</a>}
+    Router.link_to(snip_name)
   end
 end
-Linker
-EOF
+Linker}
 
-dynasnip "debug", <<-EOF
+dynasnip "debug", %{
 class Debug
   def handle(*args)
     $params.inspect
   end
 end
-Debug
-EOF
+Debug}
 
 system = Snip.new(:name => "system")
-system.content = <<-EOF
-  You're in the system snip now. You probably want to {edit_link system,edit} it though
-EOF
+system.content = "You're in the system snip now. You probably want to {edit_link system,edit} it though."
 
 system.main_template = <<-HTML
 <html>
 <head>
   <title><%= @snip.name %></title>
-  <link rel="stylesheet" type="text/css" media="screen"  href="/system/css" />
+  <link rel="stylesheet" type="text/css" media="screen"  href="<%= Router.url_to("system", "css") %>" />
 </head>
 <body>
   <div id="content">
-    <div id="controls"><strong><%= @snip.name %></strong>&rarr;<a href="/<%= @snip.name %>/edit">Edit</a>; <a href="/new">New</a></div>
+    <div id="controls"><strong><%= @snip.name %></strong> &rarr; <%= Router.edit_link(@snip.name, "Edit") %>; <%= Router.new_link %></div>
     <%= @rendered_snip %>
   </div>
 </body>
@@ -55,12 +73,12 @@ system.edit_template = <<-HTML
 <html>
 <head>
   <title>Editing '<%= @snip.name %>'</title>
-  <link rel="stylesheet" type="text/css" media="screen"  href="/system/css" />
+  <link rel="stylesheet" type="text/css" media="screen"  href="<%= Router.url_to("system", "css") %>" />
 </head>
 <body>
   <div id="content">
-    <div id="controls"><a href="/<%= @snip.name %>"><%= @snip.name %></a>&rarr;<strong>Editing '<%= @snip.name %>'</strong>; <a href="/new">New</a></div>
-    <form action="/save">
+    <div id="controls"><%= Router.link_to @snip.name %> &rarr; <strong>Editing '<%= @snip.name %>'</strong></div>
+    <form action="<%= Router.url_to "save" %>">
     <dl>
       <% @snip.attributes.each do |name, value| %>
       <dt><%= name %></dt>
@@ -82,19 +100,22 @@ class Save
     snip_attributes.delete(:snip)
     snip_attributes.delete(:format)
     
-    return 'no params' if snip_attributes.nil?
+    return 'no params' if snip_attributes.empty?
     p snip_attributes[:name]
     snip = Snip.find_by_name(snip_attributes[:name])
     snip_attributes.each do |name, value|
       puts "setting \#{name} as \#{value}"
       snip.__send__(:set_value, name, value)
+      puts "ok"
+      puts snip.__send__(name)
     end
     snip.save
-    "Saved snip '\#{snip_attributes[:name]}' ok"
+    %{Saved snip \#{Router.link_to snip_attributes[:name]} ok}
   rescue Exception => e
     p e
+    puts "Creating snip instead"
     Snip.new(snip_attributes).save
-    "Created snip '\#{snip_attributes[:name]}' ok"
+    %{Created snip \#{Router.link_to snip_attributes[:name]} ok}
   end
 end
 Save  

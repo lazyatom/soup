@@ -100,6 +100,11 @@ class BadDynasnip
 end
 BadDynasnip}
 
+snip "test", %{
+* monkey
+* jazz
+* feathers
+}
 
 if __FILE__ == $0
   def render(snip_name, part=nil)

@@ -100,6 +100,12 @@ module Render
   end
 end
 
+def snip(name, content)
+  snip = Snip.new(:name => name)
+  snip.content = content
+  snip.save
+end
+
 # Creates a default ruby dynasnip
 def dynasnip(name, code, render_as="Ruby")
   snip = Snip.new(:name => name)
