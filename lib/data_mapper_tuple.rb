@@ -32,7 +32,6 @@ class Tuple < DataMapper::Base
 
   def save
     if dirty? or new_record?
-      puts "saving tuple #{self}"
       super
     end
   end

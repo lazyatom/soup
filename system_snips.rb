@@ -79,19 +79,14 @@ class Save
     snip_attributes.delete(:format)
     
     return 'no params' if snip_attributes.empty?
-    p snip_attributes[:name]
     snip = Snip.find_by_name(snip_attributes[:name])
     snip_attributes.each do |name, value|
-      puts "setting \#{name} as \#{value}"
       snip.__send__(:set_value, name, value)
-      puts "ok"
-      puts snip.__send__(name)
     end
     snip.save
     %{Saved snip \#{Router.link_to snip_attributes[:name]} ok}
   rescue Exception => e
-    p e
-    puts "Creating snip instead"
+    p snip_attributes
     Snip.new(snip_attributes).save
     %{Created snip \#{Router.link_to snip_attributes[:name]} ok}
   end

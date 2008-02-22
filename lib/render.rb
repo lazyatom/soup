@@ -61,11 +61,11 @@ module Render
         end
       end
     rescue Exception => e
-      error_for(e.message, snip_name, part, args)
+      error_for(e, snip_name, part, args)
     end
     
-    def error_for(message, snip_name, part=nil, args=[])
-      "[Error - " + message + ": #{snip_name}]"
+    def error_for(e, snip_name, part=nil, args=[])
+      "[Error - " + e.message + ": #{snip_name}<br/><br/>#{e.backtrace.join('<br/>')}]"
     end
   end
 
@@ -100,16 +100,13 @@ module Render
   end
 end
 
-def snip(name, content)
-  snip = Snip.new(:name => name)
+def snip(name, content, other_attributes={})
+  snip = Snip.new(other_attributes.merge(:name => name))
   snip.content = content
   snip.save
 end
 
 # Creates a default ruby dynasnip
-def dynasnip(name, code, render_as="Ruby")
-  snip = Snip.new(:name => name)
-  snip.content = code
-  snip.render_as = render_as
-  snip.save
+def dynasnip(name, code, other_attributes={:render_as => "Ruby"})
+  snip(name, code, other_attributes)
 end
