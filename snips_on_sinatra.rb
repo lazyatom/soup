@@ -13,6 +13,28 @@ def bootstrap_data
   load 'test_snips.rb'
 end
 
+module Router
+  def link_to(snip_name, part=nil)
+    %{<a href="#{Router.url_to(snip_name, part)}">#{snip_name}</a>}
+  end
+  
+  def url_to(snip_name, part=nil)
+    url = "/space/#{snip_name}"
+    url += "/#{part}" if part
+    url
+  end
+  
+  def edit_link(snip_name, link_text)
+    %[<a href="/edit/#{snip_name}">#{link_text}</a>]
+  end
+  
+  def new_link
+    %[<a href="/new">New</a>]
+  end
+  
+  extend self
+end
+
 #bootstrap_data
 
 def edit(snip)
