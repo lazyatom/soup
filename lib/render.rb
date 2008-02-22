@@ -1,6 +1,7 @@
 require 'soup'
 
 require 'rubygems'
+gem 'RedCloth'
 require 'redcloth'
 
 # This module relies on the Router model, which should define the following methods
