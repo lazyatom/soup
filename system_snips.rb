@@ -134,6 +134,12 @@ textarea {
   width: 100%;
   height: 10em;
 }
+
+pre {
+  background-color: #f6f6f6;
+  border: 1px solid #ccc;
+  padding: 1em;
+}
 CSS
 
 
