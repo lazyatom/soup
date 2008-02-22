@@ -90,7 +90,7 @@ class Save
       snip.__send__(:set_value, name, value)
     end
     snip.save
-    "Saved snip '\#{snip_attributes[:name]}' ok"    
+    "Saved snip '\#{snip_attributes[:name]}' ok"
   rescue Exception => e
     p e
     Snip.new(snip_attributes).save
