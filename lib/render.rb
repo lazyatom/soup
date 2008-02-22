@@ -3,6 +3,12 @@ require 'soup'
 require 'rubygems'
 require 'redcloth'
 
+# This module relies on the Router model, which should define the following methods
+# Router.link_to(snip_name, part=nil)
+# Router.url_to(snip_name, part=nil)
+# Router.edit_link(snip_name, link_text)
+# Router.new_link(snip_name="New")
+
 module Render
   def self.class_called(renderer_name)
     const_get(renderer_name)
@@ -53,12 +59,16 @@ module Render
     # Default rendering behaviour. Subclasses shouldn't really need to touch this.
     def render(snip_name, part=nil, args=[])
       snip = Snip.find_by_name(snip_name)
-      if part
-        render_part(snip, part, args)
-      else
-        rendering(snip, args) do |renderer, snip, args|
-          renderer.chain snip, args, :process_text, :include_snips
+      if snip
+        if part
+          render_part(snip, part, args)
+        else
+          rendering(snip, args) do |renderer, snip, args|
+            renderer.chain snip, args, :process_text, :include_snips
+          end
         end
+      else
+        "[Snip does not exist: #{Router.new_link(snip_name)}]"
       end
     rescue Exception => e
       error_for(e, snip_name, part, args)

@@ -25,7 +25,7 @@ class Snip < BlankSlate
     snip.replace_tuples(tuples)
     snip
   rescue
-    raise "Couldn't find snip '#{name}'"
+    return nil
   end
   
   attr_reader :tuples
@@ -69,7 +69,6 @@ class Snip < BlankSlate
   def method_missing(method, *args)
     value = args.length > 1 ? args : args.first
     if method.to_s =~ /(.*)=\Z/ # || value - could be a nice DSL touch.
-      puts "setting #{$1} to #{value}"
       set_value($1, value)
     else
       get_value(method.to_s)

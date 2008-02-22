@@ -7,6 +7,16 @@ ActiveRecord::Base.establish_connection(
 )
 
 class Tuple < ActiveRecord::Base
+  def self.prepare_database
+    ActiveRecord::Migration.create_table :tuples, :force => true do |t|
+      t.column :snip_id, :integer
+      t.column :name, :string
+      t.column :value, :text
+      t.column :created_at, :datetime
+      t.column :updated_at, :datetime
+    end
+  end
+  
   def self.for_snip(id)
     find_all_by_snip_id(id)
   end
@@ -18,7 +28,7 @@ class Tuple < ActiveRecord::Base
   
   # TODO: *totally* not threadsafe.
   def self.next_snip_id
-    maximum(:snip_id) + 1
+    maximum(:snip_id) + 1 rescue 1
   end
   
   def save
@@ -31,14 +41,3 @@ class Tuple < ActiveRecord::Base
     true # hmm.
   end
 end
-  
-# Create the table with this:
-#
-# ActiveRecord::Migration.create_table do 
-#   t.column :snip_id, :integer
-#   t.column :name, :string
-#   t.column :value, :text
-#   t.column :created_at, :datetime
-#   t.column :updated_at, :datetime
-# end
-

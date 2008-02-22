@@ -16,6 +16,10 @@ class Tuple < DataMapper::Base
   property :created_at, :datetime
   property :updated_at, :datetime
   
+  def self.prepare_database
+    DataMapper::Persistence.auto_migrate!
+  end
+  
   def self.for_snip(id)
     all(:snip_id => id)
   end
@@ -38,7 +42,3 @@ class Tuple < DataMapper::Base
   
   alias_method :destroy, :destroy!
 end
-
-# Create the table with this:
-#
-# DataMapper::Persistence.auto_migrate!

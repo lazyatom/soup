@@ -7,12 +7,6 @@ $LOAD_PATH.uniq!
 require 'soup'
 require 'render'
 
-def bootstrap_data
-  DataMapper::Persistence.auto_migrate!
-  load 'system_snips.rb'
-  load 'test_snips.rb'
-end
-
 module Router
   def link_to(snip_name, part=nil)
     %{<a href="#{Router.url_to(snip_name, part)}">#{snip_name}</a>}
@@ -28,14 +22,12 @@ module Router
     %[<a href="/edit/#{snip_name}">#{link_text}</a>]
   end
   
-  def new_link
-    %[<a href="/new">New</a>]
+  def new_link(snip_name="New")
+    %[<a href="/new/#{snip_name}">#{snip_name}</a>]
   end
   
   extend self
 end
-
-#bootstrap_data
 
 def edit(snip)
   @snip = snip
@@ -56,20 +48,16 @@ end
 
 SystemSnip = Snip.find_by_name('system')
 
-def basic_unsaved_snip
-  snip = Snip.new
-  snip.name = ""
-  snip.content = ""
-  snip.render_as = "Markdown"
-  snip
+def basic_unsaved_snip(params={})
+  Snip.new({:name => "", :content => "", :render_as => "Markdown"}.update(params))
 end
 
 get '/' do
   show 'start'
 end  
 
-get '/new' do
-  edit basic_unsaved_snip
+get '/new/:snip' do
+  edit basic_unsaved_snip(:name => params[:snip])
 end
 
 get '/space/:snip' do
