@@ -31,7 +31,10 @@ class Tuple < DataMapper::Base
   end
 
   def save
-    super if dirty? or new_record?
+    if dirty? or new_record?
+      puts "saving tuple #{self}"
+      super
+    end
   end
   
   alias_method :destroy, :destroy!
