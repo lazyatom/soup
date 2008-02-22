@@ -34,7 +34,7 @@ system.main_template = <<-HTML
 </head>
 <body>
   <div id="content">
-    <a href="/<%= @snip_name %>/edit">Edit</a>
+    <div id="controls"><strong><%= @snip_name %></strong>&rarr;<a href="/<%= @snip_name %>/edit">Edit</a></div>
     <%= @rendered_snip %>
   </div>
 </body>
@@ -50,7 +50,7 @@ system.edit_template = <<-HTML
 </head>
 <body>
   <div id="content">
-    <a href="/<%= @snip.name %>">Back</a>
+    <div id="controls"><a href="/<%= @snip.name %>"><%= @snip.name %></a>&rarr;<strong>Editing '<%= @snip.name %>'</strong></div>
     <dl>
       <% @snip.attributes.each do |name, value| %>
       <dt><%= name %></dt>
@@ -77,6 +77,13 @@ div#content {
   margin: 0 auto;
   background-color: #fff;
   padding: 1em;
+}
+
+div#controls {
+font-size: 80%;
+padding-bottom: 1em;
+margin-bottom: 1em;
+border-bottom: 1px solid #999;
 }
 
 textarea {
