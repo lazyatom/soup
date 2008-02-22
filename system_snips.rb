@@ -43,7 +43,12 @@ system.main_template = <<-HTML
 </head>
 <body>
   <div id="content">
-    <div id="controls"><strong><%= @snip.name %></strong> &rarr; <%= Router.edit_link(@snip.name, "Edit") %>; <%= Router.new_link %></div>
+    <div id="controls">
+      <strong><a href="/">home</a></strong> &rarr; 
+      <%= Router.new_link %> ::
+      <strong><%= @snip.name %></strong> &rarr; 
+      <%= Router.edit_link(@snip.name, "Edit") %>
+    </div>
     <%= @rendered_snip %>
   </div>
 </body>
@@ -59,7 +64,12 @@ system.edit_template = <<-HTML
 </head>
 <body>
   <div id="content">
-    <div id="controls"><%= Router.link_to @snip.name %> &rarr; <strong>Editing '<%= @snip.name %>'</strong></div>
+    <div id="controls">
+      <strong><a href="/">home</a></strong> &rarr; 
+      <%= Router.new_link %> ::
+      <%= Router.link_to @snip.name %> &rarr; 
+      <strong>Editing '<%= @snip.name %>'</strong>
+    </div>
     <form action="<%= Router.url_to "save" %>">
     <dl>
       <% @snip.attributes.each do |name, value| %>
