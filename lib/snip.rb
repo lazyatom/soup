@@ -28,6 +28,8 @@ class Snip < BlankSlate
     raise "Couldn't find snip '#{name}'"
   end
   
+  attr_reader :tuples
+  
   def initialize(attributes = {})
     set_id(attributes.delete(:__id))
     @tuples = {}
