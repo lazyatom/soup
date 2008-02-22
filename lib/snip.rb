@@ -24,6 +24,8 @@ class Snip < BlankSlate
     snip = Snip.new(:__id => tuples.first.snip_id)
     snip.replace_tuples(tuples)
     snip
+  rescue
+    raise "Couldn't find snip '#{name}'"
   end
   
   def initialize(attributes = {})
@@ -60,7 +62,7 @@ class Snip < BlankSlate
   
   def method_missing(method, *args)
     value = args.length > 1 ? args : args.first
-    if method.to_s =~ /(.*)=\Z/
+    if method.to_s =~ /(.*)=\Z/ # || value - could be a nice DSL touch.
       set_value($1, value)
     else
       get_value(method.to_s)

@@ -1,90 +1,7 @@
-$LOAD_PATH << "lib"
-
 require 'soup'
 
 require 'rubygems'
 require 'redcloth'
-
-DataMapper::Persistence.auto_migrate!
-
-s1 = Snip.new(:name => "snip1")
-s1.content = <<EOF
-Linking is good: {link_to bold}
-Here's a bold snip: {bold}
-Here's a random number between 5 and 15: {rand 5,15}
-
-And lets include some textile: {textile_example}
-The source for that was {pre textile_example}
-
-And lets include some markdown!: {markdown_example}
-The source for that was {pre markdown_example}
-
-EOF
-s1.save
-
-bold = Snip.new(:name => "bold")
-bold.content =<<EOF
-Snip2 in da house!
-EOF
-bold.render_as = "Bold"
-bold.save
-
-textile = Snip.new(:name => "textile_example")
-textile.content =<<EOF
-# testing lists
-
-what the *hell* are __you__ looking at? "Beyotch":http://example.com
-EOF
-textile.render_as = "Textile"
-textile.save
-
-textile = Snip.new(:name => "markdown_example")
-textile.content =<<EOF
-# testing header
-
-what the *hell* are looking at, [beyotch](http://example.com)?
-EOF
-textile.render_as = "Markdown"
-textile.save
-
-link_to = Snip.new(:name => "link_to")
-link_to.content =<<EOF
-class Linker
-  def handle(snip_name)
-    %{<a href="\#{snip_name}">\#{snip_name}</a>}
-  end
-end
-Linker
-EOF
-link_to.render_as = "Ruby"
-link_to.save
-
-pre = Snip.new(:name => "pre")
-pre.content =<<EOF
-class ShowContentInPreTag
-  def handle(snip_name)
-    %{<pre>\#{Snip.find_by_name(snip_name).content}</pre>}
-  end
-end
-ShowContentInPreTag
-EOF
-pre.render_as = "Ruby"
-pre.save
-
-rand = Snip.new(:name => "rand")
-rand.content =<<EOF
-class RandomNumber
-  def handle(min, max)
-    # arguments come in as strings, so we need to convert them.
-    min = min.to_i
-    max = max.to_i
-    (rand(max-min) + min)
-  end
-end
-RandomNumber
-EOF
-rand.render_as = "Ruby"
-rand.save
 
 module Render
   def self.class_called(renderer_name)
@@ -143,6 +60,12 @@ module Render
           renderer.chain snip, args, :process_text, :include_snips
         end
       end
+    rescue Exception => e
+      error_for(e.message, snip_name, part, args)
+    end
+    
+    def error_for(message, snip_name, part=nil, args=[])
+      "[Error - " + message + ": #{snip_name}]"
     end
   end
 
@@ -176,9 +99,3 @@ module Render
     end
   end
 end
-
-def render(snip_name, part=nil)
-  Render::Base.new.render(snip_name, part)
-end
-
-puts render('snip1')
