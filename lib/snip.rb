@@ -50,6 +50,10 @@ class Snip < BlankSlate
     replace_tuples(Tuple.for_snip(id))
     self
   end
+  
+  def attributes
+    @tuples.inject({}) { |h, (name, t)| h[name] = t.value; h }
+  end
 
   def replace_tuples(new_tuples)
     @tuples.clear

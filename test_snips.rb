@@ -1,11 +1,10 @@
 $LOAD_PATH << "lib"
+$LOAD_PATH.uniq!
 
 require 'soup'
 require 'render'
 
-DataMapper::Persistence.auto_migrate!
-
-s1 = Snip.new(:name => "snip1")
+s1 = Snip.new(:name => "start")
 s1.content =<<EOF
 Linking is good: {link_to bold}
 Here's a bold snip: {bold}
@@ -72,20 +71,7 @@ EOF
 textile.render_as = "Markdown"
 textile.save
 
-link_to = Snip.new(:name => "link_to")
-link_to.content =<<EOF
-class Linker
-  def handle(snip_name)
-    %{<a href="\#{snip_name}">\#{snip_name}</a>}
-  end
-end
-Linker
-EOF
-link_to.render_as = "Ruby"
-link_to.save
-
-pre = Snip.new(:name => "pre")
-pre.content =<<EOF
+dynasnip "pre", <<-EOF
 class ShowContentInPreTag
   def handle(snip_name)
     %{<pre>\#{Snip.find_by_name(snip_name).content}</pre>}
@@ -93,11 +79,8 @@ class ShowContentInPreTag
 end
 ShowContentInPreTag
 EOF
-pre.render_as = "Ruby"
-pre.save
 
-rand = Snip.new(:name => "rand")
-rand.content =<<EOF
+dynasnip "rand", <<-EOF
 class RandomNumber
   def handle(min=1, max=100)
     # arguments come in as strings, so we need to convert them.
@@ -108,21 +91,20 @@ class RandomNumber
 end
 RandomNumber
 EOF
-rand.render_as = "Ruby"
-rand.save
 
-Snip.new(:name => "bad_dynasnip", :content => %{
+dynasnip "bad_dynasnip", %{
 class BadDynasnip
   def handle(*args)
     raise "Oh no"
   end
 end
-BadDynasnip}, :render_as => "Ruby").save
+BadDynasnip}
+
 
 if __FILE__ == $0
   def render(snip_name, part=nil)
     Render::Base.new.render(snip_name, part)
   end
   
-  puts render('snip1')
+  puts render('start')
 end

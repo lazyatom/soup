@@ -99,3 +99,11 @@ module Render
     end
   end
 end
+
+# Creates a default ruby dynasnip
+def dynasnip(name, code, render_as="Ruby")
+  snip = Snip.new(:name => name)
+  snip.content = code
+  snip.render_as = render_as
+  snip.save
+end
