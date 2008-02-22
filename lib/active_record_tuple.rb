@@ -11,6 +11,11 @@ class Tuple < ActiveRecord::Base
     find_all_by_snip_id(id)
   end
   
+  def self.all_for_snip_named(name)
+    id = find_by_name_and_value("name", name).snip_id
+    for_snip(id)
+  end
+  
   # TODO: *totally* not threadsafe.
   def self.next_snip_id
     maximum(:snip_id) + 1

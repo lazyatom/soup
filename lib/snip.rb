@@ -3,6 +3,7 @@ require 'blankslate'
 
 # methods called on Tuple:
 # Tuple.for_snip(id)
+# Tuple.all_for_snip_named(name)
 # Tuple.next_snip_id
 # Tuple#save
 # Tuple#name
@@ -14,6 +15,13 @@ class Snip < BlankSlate
   def self.[](id)
     raise "not found" unless (tuples = Tuple.for_snip(id)).any?
     snip = Snip.new(:__id => id)
+    snip.replace_tuples(tuples)
+    snip
+  end
+  
+  def self.find_by_name(name)
+    tuples = Tuple.all_for_snip_named(name)
+    snip = Snip.new(:__id => tuples.first.snip_id)
     snip.replace_tuples(tuples)
     snip
   end
