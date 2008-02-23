@@ -38,7 +38,7 @@ module Render
     \} }x
     
     # Default behaviour to include a snip's content
-    def include_snips(content, args)
+    def include_snips(snip, content, args)
       content.gsub(SNIP_REGEXP) do
         snip_name = $1
         snip_attribute = $2
@@ -49,7 +49,7 @@ module Render
     
     # Simply calls a bunch of methods, passing the result of each to the next
     def chain(snip, args, *methods)
-      methods.inject(snip.content) { |str, method| send(method, str, args) }
+      methods.inject(snip.content) { |content, method| send(method, snip, content, args) }
     end
     
     # Abstracted out because it might be useful to override somewhere
@@ -76,7 +76,8 @@ module Render
     end
     
     def error_for(e, snip_name, part=nil, args=[])
-      "[Error - " + e.message + ": #{snip_name}<br/><br/>#{e.backtrace.join('<br/>')}]"
+      "[<strong>Error</strong> - " + e.message + 
+      ": #{snip_name}<br/><em>Backtrace:</em><br/>#{e.backtrace.join('<br/>')}]"
     end
   end
 
@@ -86,27 +87,27 @@ module Render
   # is returned by "eval" and we can instantiate it.
   # The result always has #to_s called on it.
   class Ruby < Base
-    def process_text(str, args)
-      handler = eval(str)
+    def process_text(snip, content, args)
+      handler = eval(content, binding, snip.name)
       handler.new.handle(*args).to_s
     end
   end
 
   class Bold < Base
-    def process_text(str, args)
-      "<b>#{str}</b>" 
+    def process_text(snip, content, args)
+      "<b>#{content}</b>" 
     end
   end
   
   class Textile < Base
-    def process_text(str, args)
-      RedCloth.new(str).to_html
+    def process_text(snip, content, args)
+      RedCloth.new(content).to_html
     end
   end
   
   class Markdown < Base
-    def process_text(str, args)
-      RedCloth.new(str).to_html(:markdown)
+    def process_text(snip, content, args)
+      RedCloth.new(content).to_html(:markdown)
     end
   end
 end
