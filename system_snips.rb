@@ -74,7 +74,8 @@ system.edit_template = <<-HTML
     <dl>
       <% @snip.attributes.each do |name, value| %>
       <dt><%= name %></dt>
-      <dd><textarea name="<%= name %>"><%= value %></textarea></dd>
+      <% num_rows = value.split("\n").length + 1 %>
+      <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%= value %></textarea></dd>
       <% end %>
     </dl>
     <button name='save_button'>Save</button>
@@ -132,7 +133,6 @@ border-bottom: 1px solid #999;
 
 textarea {
   width: 100%;
-  height: 10em;
 }
 
 pre {
