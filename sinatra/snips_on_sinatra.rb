@@ -39,7 +39,7 @@ def edit(snip)
 end
 
 def raw(snip_name)
-  @snip = Snip.find_by_name(snip_name)
+  @snip = Snip[snip_name]
   renderer(params).render(snip_name)
 end
 
@@ -48,7 +48,7 @@ def show(snip_name)
   erb SystemSnip.main_template
 end
 
-SystemSnip = Snip.find_by_name('system')
+SystemSnip = Snip['system']
 
 def basic_unsaved_snip(params={})
   Snip.new({:name => "", :content => "", :render_as => "Markdown"}.update(params))
@@ -75,6 +75,6 @@ get '/space/:snip/:part' do
 end
 
 get '/edit/:snip' do 
-  edit Snip.find_by_name(params[:snip])
+  edit Snip[params[:snip]]
 end
 

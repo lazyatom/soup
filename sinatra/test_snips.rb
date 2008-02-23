@@ -76,7 +76,7 @@ textile.save
 dynasnip "pre", <<-EOF
 class ShowContentInPreTag
   def handle(snip_name)
-    %{<pre>\#{Snip.find_by_name(snip_name).content}</pre>}
+    %{<pre>\#{Snip[snip_name].content}</pre>}
   end
 end
 ShowContentInPreTag

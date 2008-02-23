@@ -71,7 +71,7 @@ module Render
     
     # Default rendering behaviour. Subclasses shouldn't really need to touch this.
     def render(snip_name, part=nil, args=[])
-      snip = Snip.find_by_name(snip_name)
+      snip = Snip[snip_name]
       if snip
         if part
           render_part(snip, part, args)

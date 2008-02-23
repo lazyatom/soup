@@ -15,10 +15,10 @@ EditSnipLink}
 dynasnip "link_to", %{
 class Linker
   def handle(snip_name)
-    if Snip.find_by_name(snip_name).nil?
-      Router.new_link(snip_name)
-    else
+    if Snip[snip_name]
       Router.link_to(snip_name)
+    else
+      Router.new_link(snip_name)
     end
   end
 end
@@ -96,7 +96,7 @@ class Save < Dynasnip
     snip_attributes.delete(:format)
     
     return 'no params' if snip_attributes.empty?
-    snip = Snip.find_by_name(snip_attributes[:name])
+    snip = Snip[snip_attributes[:name]]
     snip_attributes.each do |name, value|
       snip.__send__(:set_value, name, value)
     end
@@ -159,5 +159,5 @@ CSS
 system.save
 
 if __FILE__ == $0
-  puts Snip.find_by_name('system').main_template
+  puts Snip['system'].main_template
 end

@@ -12,20 +12,20 @@ require 'blankslate'
 
 class Snip < BlankSlate
   
-  def self.[](id)
+  def self.[](name)
+      tuples = Tuple.all_for_snip_named(name)
+      snip = Snip.new(:__id => tuples.first.snip_id)
+      snip.replace_tuples(tuples)
+      snip
+    rescue
+      return nil
+  end
+  
+  def self.find(id)
     raise "not found" unless (tuples = Tuple.for_snip(id)).any?
     snip = Snip.new(:__id => id)
     snip.replace_tuples(tuples)
     snip
-  end
-  
-  def self.find_by_name(name)
-    tuples = Tuple.all_for_snip_named(name)
-    snip = Snip.new(:__id => tuples.first.snip_id)
-    snip.replace_tuples(tuples)
-    snip
-  rescue
-    return nil
   end
   
   attr_reader :tuples
