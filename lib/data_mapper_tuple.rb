@@ -6,6 +6,9 @@ DataMapper::Database.setup({
   :database => 'soup_development'
 })
 
+# This tuple implementation is broken - there's a weird interaction
+# where values are not set within the web application.
+#
 class Tuple < DataMapper::Base
   
   property :snip_id, :integer
