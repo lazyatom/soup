@@ -3,6 +3,7 @@ require 'blankslate'
 
 # methods called on Tuple:
 # Tuple.for_snip(id)
+# Tuple.find_matching(tuple_name, tuple_value_conditions)
 # Tuple.all_for_snip_named(name)
 # Tuple.next_snip_id
 # Tuple#save
@@ -12,6 +13,8 @@ require 'blankslate'
 
 class Snip < BlankSlate
   
+  # Returns the snip with the given name (i.e. the snip with the tuple of "name" -> name)
+  #
   def self.[](name)
       tuples = Tuple.all_for_snip_named(name)
       snip = Snip.new(:__id => tuples.first.snip_id)
@@ -21,6 +24,21 @@ class Snip < BlankSlate
       return nil
   end
   
+  # Returns all snips which match the given criteria, i.e. which have a tuple that
+  # matches the given conditions. For example:
+  #
+  #   Snip.with(:created_at, "> '2007-01-01'")
+  #
+  # should return all Snips who have a 'created_at' value greater than '2007-01-01'.
+  #
+  def self.with(name, tuple_value_conditions=nil)
+    matching_tuples = Tuple.find_matching(name, tuple_value_conditions)
+    matching_tuples.map { |t| t.snip_id }.uniq.map { |snip_id| find(snip_id) }
+  end
+  
+  # Returns the snip with the given ID (i.e. the collection of all tuples
+  # with the matching snip_id, gathered into a magical snip.)
+  #
   def self.find(id)
     raise "not found" unless (tuples = Tuple.for_snip(id)).any?
     snip = Snip.new(:__id => id)

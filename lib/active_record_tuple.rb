@@ -21,6 +21,12 @@ class Tuple < ActiveRecord::Base
     find_all_by_snip_id(id)
   end
   
+  def self.find_matching(name, value_conditions=nil)
+    condition_sql = "name = '#{name}'"
+    condition_sql += " AND value #{value_conditions}" if value_conditions
+    find(:all, :conditions => condition_sql)
+  end
+  
   def self.all_for_snip_named(name)
     id = find_by_name_and_value("name", name).snip_id
     for_snip(id)
