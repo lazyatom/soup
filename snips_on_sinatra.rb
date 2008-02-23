@@ -29,16 +29,18 @@ module Router
   extend self
 end
 
+def renderer(params)
+  Render::Base.new(params)
+end
+
 def edit(snip)
   @snip = snip
   erb SystemSnip.edit_template  
 end
 
 def raw(snip_name)
-  #$params = params # store this for the save dyna, basically. hacky. horrible.
-
   @snip = Snip.find_by_name(snip_name)
-  Render::Base.new(params).render(snip_name)
+  renderer(params).render(snip_name)
 end
 
 def show(snip_name)
@@ -69,7 +71,7 @@ get '/raw/:snip' do
 end
 
 get '/space/:snip/:part' do
-  Render::Base.new(params).render(params[:snip], params[:part])
+  renderer(params).render(params[:snip], params[:part])
 end
 
 get '/edit/:snip' do 
