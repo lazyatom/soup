@@ -7,10 +7,7 @@ require 'redcloth'
 require 'dynasnip'
 
 # This module relies on the Router model, which should define the following methods
-# Router.link_to(snip_name, part=nil)
-# Router.url_to(snip_name, part=nil)
-# Router.edit_link(snip_name, link_text)
-# Router.new_link(snip_name="New")
+# Router.new_link(snip_name)
 
 module Render
   def self.class_called(renderer_name)
