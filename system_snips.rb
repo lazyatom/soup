@@ -24,10 +24,12 @@ class Linker
 end
 Linker}
 
+# If the dynasnip is a subclass of Dynasnip, it has access to the request hash
+# (or whatever - access to some object outside of the snip itself.)
 dynasnip "debug", %{
-class Debug
+class Debug < Dynasnip
   def handle(*args)
-    $params.inspect
+    request.inspect
   end
 end
 Debug}
@@ -86,9 +88,9 @@ system.edit_template = <<-HTML
 HTML
 
 dynasnip "save", <<-EOF
-class Save
+class Save < Dynasnip
   def handle(*args)
-    snip_attributes = $params.dup
+    snip_attributes = request.dup
     snip_attributes.delete(:save_button)
     snip_attributes.delete(:snip)
     snip_attributes.delete(:format)

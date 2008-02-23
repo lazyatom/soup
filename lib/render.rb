@@ -4,6 +4,8 @@ require 'rubygems'
 gem 'RedCloth'
 require 'redcloth'
 
+require 'dynasnip'
+
 # This module relies on the Router model, which should define the following methods
 # Router.link_to(snip_name, part=nil)
 # Router.url_to(snip_name, part=nil)
@@ -16,11 +18,19 @@ module Render
   end
 
   class Base
+    attr_reader :render_context
+    
+    def initialize(render_context)
+      # We just pass this on to other objects - other
+      # renderers, really.
+      @render_context = render_context
+    end
+    
     # Yields the appropriate renderer for the given snip. The default
     # renderer is this one (Render::Base)
     def rendering(snip, args=[])
       if renderer = snip.render_as
-        yield Render.class_called(renderer).new, snip, args
+        yield Render.class_called(renderer).new(@request), snip, args
       else
         yield self, snip, args
       end
@@ -83,13 +93,21 @@ module Render
 
   # Snips that render_as "Ruby" should define a class which has the instance
   # method 'handle' on it.
+  # The result of the handle method invocation always has #to_s called on it.
   # The last line of the content should be the name of that class, so that it
   # is returned by "eval" and we can instantiate it.
-  # The result always has #to_s called on it.
+  # If the dynasnip needs access to the 'context' (i.e. probably the request
+  # itself), it should be a subclass of Dynasnip (or define an initializer
+  # that accepts the context as its first argument).
   class Ruby < Base
     def process_text(snip, content, args)
-      handler = eval(content, binding, snip.name)
-      handler.new.handle(*args).to_s
+      handler_klass = eval(content, binding, snip.name)
+      instance = if handler_klass.instance_method(:initialize).arity == 0
+        handler_klass.new
+      else
+        handler_klass.new(render_context)
+      end
+      instance.handle(*args).to_s
     end
   end
 
