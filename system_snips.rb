@@ -44,7 +44,7 @@ system.main_template = <<-HTML
 <body>
   <div id="content">
     <div id="controls">
-      <strong><a href="/">home</a></strong> &rarr; 
+      <strong><a href="/">home</a></strong>, 
       <%= Router.new_link %> ::
       <strong><%= @snip.name %></strong> &rarr; 
       <%= Router.edit_link(@snip.name, "Edit") %>
@@ -65,7 +65,7 @@ system.edit_template = <<-HTML
 <body>
   <div id="content">
     <div id="controls">
-      <strong><a href="/">home</a></strong> &rarr; 
+      <strong><a href="/">home</a></strong>, 
       <%= Router.new_link %> ::
       <%= Router.link_to @snip.name %> &rarr; 
       <strong>Editing '<%= @snip.name %>'</strong>
@@ -139,6 +139,17 @@ pre {
   background-color: #f6f6f6;
   border: 1px solid #ccc;
   padding: 1em;
+}
+
+a.new {
+  background-color: #f0f0f0;
+  text-decoration: none;
+  color: #999;
+  padding: 0.2em;
+}
+
+a.new:hover {
+  text-decoration: underline;
 }
 CSS
 
