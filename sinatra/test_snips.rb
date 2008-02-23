@@ -29,6 +29,8 @@ The source for that was
 
 {pre markdown_example}
 
+How about some {link_to debug} information: {debug}
+
 What about a missing snip? Lets try to include one: {monkey}
 
 And an error when running? {bad_dynasnip}

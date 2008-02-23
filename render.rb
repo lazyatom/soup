@@ -1,8 +1,13 @@
 require 'soup'
 
 require 'rubygems'
+
 gem 'RedCloth'
 require 'redcloth'
+
+# from http://www.deveiate.org/projects/BlueCloth
+gem 'BlueCloth'
+require 'bluecloth'
 
 require 'dynasnip'
 
@@ -27,7 +32,7 @@ module Render
     # renderer is this one (Render::Base)
     def rendering(snip, args=[])
       if renderer = snip.render_as
-        yield Render.class_called(renderer).new(@request), snip, args
+        yield Render.class_called(renderer).new(render_context), snip, args
       else
         yield self, snip, args
       end
@@ -122,7 +127,7 @@ module Render
   
   class Markdown < Base
     def process_text(snip, content, args)
-      RedCloth.new(content).to_html(:markdown)
+      BlueCloth.new(content).to_html
     end
   end
 end

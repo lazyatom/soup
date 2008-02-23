@@ -6,6 +6,6 @@ require 'render'
 
 if __FILE__ == $0
   Tuple.prepare_database 
-  load 'system_snips.rb'
-  load 'test_snips.rb'
+  load File.join(File.dirname(__FILE__), *%w[system_snips.rb])
+  load File.join(File.dirname(__FILE__), *%w[test_snips.rb])
 end
