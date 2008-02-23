@@ -29,7 +29,7 @@ Linker}
 dynasnip "debug", %{
 class Debug < Dynasnip
   def handle(*args)
-    request.inspect
+    context.inspect
   end
 end
 Debug}
@@ -90,7 +90,7 @@ HTML
 dynasnip "save", <<-EOF
 class Save < Dynasnip
   def handle(*args)
-    snip_attributes = request.dup
+    snip_attributes = context.dup
     snip_attributes.delete(:save_button)
     snip_attributes.delete(:snip)
     snip_attributes.delete(:format)

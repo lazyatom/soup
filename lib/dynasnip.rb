@@ -1,7 +1,7 @@
 class Dynasnip
-  attr_reader :request
+  attr_reader :context
   
-  def initialize(request)
-    @request = request
+  def initialize(context)
+    @context = context
   end
 end
