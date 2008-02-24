@@ -2,25 +2,23 @@ require 'rubygems'
 #Gem::manage_gems
 require 'rake/gempackagetask'
 
-files = FileList["{lib}/**/*"].exclude("rdoc").to_a
-p files 
+namespace :soup do
+  soup_spec = Gem::Specification.new do |s|
+    s.name             = "soup"
+    s.summary          = "A mess of data"
+    s.version          = "0.1.0"
+    s.author           = "James Adam"
+    s.email            = "james at lazyatom dot com"
+    s.platform         = Gem::Platform::RUBY
+    s.files            = FileList["{lib}/**/*"].exclude("rdoc").to_a
+    s.require_path     = "lib"
+    s.has_rdoc         = true
+    s.extra_rdoc_files = ['README']
+  end
 
-spec = Gem::Specification.new do |s|
-  s.name             = "snip_space"
-  s.summary          = "A mess of data"
-  s.version          = "0.1.0"
-  s.author           = "James Adam"
-  s.email            = "james at lazyatom dot com"
-  s.platform         = Gem::Platform::RUBY
-  s.files            = files
-  s.require_path     = "lib"
-  s.has_rdoc         = true
-  s.extra_rdoc_files = ['README']
+  Rake::GemPackageTask.new(soup_spec) do |p|
+    p.gem_spec = soup_spec
+  end
 end
 
-Rake::GemPackageTask.new(spec) do |p|
-  p.need_tar = true
-  p.gem_spec = spec
-end
-
-task :default => [:package]
+task :default => ["soup:package"]
