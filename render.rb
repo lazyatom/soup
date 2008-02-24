@@ -20,19 +20,19 @@ module Render
   end
 
   class Base
-    attr_reader :render_context
+    attr_reader :context
     
-    def initialize(render_context)
+    def initialize(context)
       # We just pass this on to other objects - other
       # renderers, really.
-      @render_context = render_context
+      @context = context
     end
     
     # Yields the appropriate renderer for the given snip. The default
     # renderer is this one (Render::Base)
     def rendering(snip, args=[])
       if renderer = snip.render_as
-        yield Render.class_called(renderer).new(render_context), snip, args
+        yield Render.class_called(renderer).new(context), snip, args
       else
         yield self, snip, args
       end
@@ -107,7 +107,7 @@ module Render
       instance = if handler_klass.instance_method(:initialize).arity == 0
         handler_klass.new
       else
-        handler_klass.new(render_context)
+        handler_klass.new(context)
       end
       instance.handle(*args).to_s
     end

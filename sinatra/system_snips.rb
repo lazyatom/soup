@@ -24,6 +24,47 @@ class Linker
 end
 Linker}
 
+dynasnip "edit", %{
+  class EditSnip < Dynasnip
+    def handle(*args)
+      # @snip = Snip[args[0]]
+      # so this would render the template from the edit snip, but how do we set the
+      # values to the current snip?
+      # if we could set @snip, then ERB would take care of it. Perhaps that's the way.
+      # context[:snip] = @snip
+      # since we can affect the context, maybe we can override the instance variables
+      # that ERB runs against
+      render(Snip['edit'], :template)
+    end
+    # if the main template uses @snip.name for the HTML title, should we be able
+    # to do this?
+    # def name
+    #   "Editing '\#{@snip.name}'"
+    # end
+  end
+  EditSnip
+}, :template => %{
+  <form action="<%= Router.url_to "save" %>">
+  <dl>
+    <% @snip.attributes.each do |name, value| %>
+    <dt><%= name %></dt>
+    <% num_rows = value.split("\n").length + 1 %>
+    <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%= value.gsub("&", "&amp;").gsub(">", "&gt;").gsub("<", "&lt;") %></textarea></dd>
+    <% end %>
+  </dl>
+  <button name='save_button'>Save</button>
+  </form>
+}
+
+dynasnip "new", %{
+class NewSnip < Dynasnip
+  def handle(*arg)
+    render(Snip['edit'].template, Snip.new(:name => context['name']))
+  end
+end
+NewSnip
+}
+
 # If the dynasnip is a subclass of Dynasnip, it has access to the request hash
 # (or whatever - access to some object outside of the snip itself.)
 dynasnip "debug", %{
