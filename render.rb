@@ -40,8 +40,8 @@ module Render
     
     # Handles processing the text of the content. Subclasses should
     # override this method to do fancy text processing
-    def process_text(str, args)
-      str
+    def process_text(snip, content, args)
+      content
     end
     
     SNIP_REGEXP = re = %r{ \{
