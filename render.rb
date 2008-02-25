@@ -35,11 +35,9 @@ module Render
       content
     end
     
-    WORD = "[\\w\\-]"
-    
     SNIP_REGEXP = re = %r{ \{
-      (#{WORD}+) (?: \.(#{WORD}+) )?
-      (?: \s+ ([#{WORD},]+) )?
+      ([\w\-]+) (?: \.([\w\-]+) )?
+      (?: \s+ ([\w\-,]+) )?
     \} }x
     
     # Default behaviour to include a snip's content
