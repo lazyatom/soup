@@ -1,14 +1,5 @@
-require 'soup'
-
 require 'rubygems'
-
-gem 'RedCloth'
-require 'redcloth'
-
-# from http://www.deveiate.org/projects/BlueCloth
-gem 'BlueCloth'
-require 'bluecloth'
-
+require 'soup'
 require 'dynasnip'
 
 # This module relies on the Router model, which should define the following methods
@@ -92,45 +83,10 @@ module Render
       ": #{snip_name}<br/><em>Backtrace:</em><br/>#{e.backtrace.join('<br/>')}]"
     end
   end
-
-  # Snips that render_as "Ruby" should define a class which has the instance
-  # method 'handle' on it.
-  # The result of the handle method invocation always has #to_s called on it.
-  # The last line of the content should be the name of that class, so that it
-  # is returned by "eval" and we can instantiate it.
-  # If the dynasnip needs access to the 'context' (i.e. probably the request
-  # itself), it should be a subclass of Dynasnip (or define an initializer
-  # that accepts the context as its first argument).
-  class Ruby < Base
-    def process_text(snip, content, args)
-      handler_klass = eval(content, binding, snip.name)
-      instance = if handler_klass.instance_method(:initialize).arity == 0
-        handler_klass.new
-      else
-        handler_klass.new(context)
-      end
-      instance.handle(*args).to_s
-    end
-  end
-
-  class Bold < Base
-    def process_text(snip, content, args)
-      "<b>#{content}</b>" 
-    end
-  end
-  
-  class Textile < Base
-    def process_text(snip, content, args)
-      RedCloth.new(content).to_html
-    end
-  end
-  
-  class Markdown < Base
-    def process_text(snip, content, args)
-      BlueCloth.new(content).to_html
-    end
-  end
 end
+
+# Load all the other renderer subclasses
+Dir['renderers/*.rb'].each { |f| require f }
 
 def snip(name, content, other_attributes={})
   snip = Snip.new(other_attributes.merge(:name => name))
