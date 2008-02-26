@@ -19,16 +19,6 @@ module Render
       @context = context
     end
     
-    # Yields the appropriate renderer for the given snip. The default
-    # renderer is this one (Render::Base)
-    def rendering(snip, args=[])
-      if renderer = snip.render_as
-        yield Render.class_called(renderer).new(context), snip, args
-      else
-        yield self, snip, args
-      end
-    end
-    
     # Handles processing the text of the content. Subclasses should
     # override this method to do fancy text processing
     def process_text(snip, content, args)
@@ -51,8 +41,8 @@ module Render
     end
     
     # Simply calls a bunch of methods, passing the result of each to the next
-    def chain(snip, args, *methods)
-      methods.inject(snip.content) { |content, method| send(method, snip, content, args) }
+    def chain(snip, part, args, *methods)
+      methods.inject(render_part(snip, part, args)) { |content, method| send(method, snip, content, args) }
     end
     
     # Abstracted out because it might be useful to override somewhere
@@ -67,15 +57,30 @@ module Render
         if part
           render_part(snip, part, args)
         else
-          rendering(snip, args) do |renderer, snip, args|
-            renderer.chain snip, args, :process_text, :include_snips
-          end
+          render_part_as_snip(snip, :content, args)
         end
       else
         "[Snip does not exist: #{Router.new_link(snip_name)}]"
       end
     rescue Exception => e
       error_for(e, snip_name, part, args)
+    end
+    
+    # Yields the appropriate renderer for the given snip. The default
+    # renderer is this one (Render::Base)
+    def rendering(snip, part, args=[], renderer=nil)
+      if renderer = renderer || snip.render_as
+        yield Render.class_called(renderer).new(context), snip, part, args
+      else
+        yield self, snip, part, args
+      end
+    end
+    
+    # Renders a part of a snip, but using the renderer specified on for the main snip
+    def render_part_as_snip(snip, part, args=[], renderer=nil)
+      rendering(snip, part, args, renderer) do |renderer, snip, part, args|
+        renderer.chain snip, part, args, :process_text, :include_snips
+      end      
     end
     
     def error_for(e, snip_name, part=nil, args=[])

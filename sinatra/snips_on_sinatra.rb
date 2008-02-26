@@ -33,9 +33,9 @@ def renderer(params)
   Render::Base.new(params)
 end
 
-def edit(snip)
-  @snip = snip
-  erb SystemSnip.edit_template  
+def edit(snip_name)
+  @snip = Snip[snip_name]
+  erb renderer(params).render_part_as_snip(SystemSnip, :edit_template)
 end
 
 def raw(snip_name)
@@ -44,8 +44,8 @@ def raw(snip_name)
 end
 
 def show(snip_name)
-  @rendered_snip = raw(snip_name)
-  erb SystemSnip.main_template
+  @snip = Snip[snip_name]
+  erb renderer(params).render_part_as_snip(SystemSnip, :main_template)
 end
 
 SystemSnip = Snip['system']
@@ -75,6 +75,6 @@ get '/space/:snip/:part' do
 end
 
 get '/edit/:snip' do 
-  edit Snip[params[:snip]]
+  edit params[:snip]
 end
 

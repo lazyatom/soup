@@ -34,7 +34,8 @@ dynasnip "edit", %{
       # context[:snip] = @snip
       # since we can affect the context, maybe we can override the instance variables
       # that ERB runs against
-      render(Snip['edit'], :template)
+      @snip_to_edit = Snip[context[:snip_to_edit]]
+      render_part_as_snip(Snip['edit'], :template, [], "Base")
     end
     # if the main template uses @snip.name for the HTML title, should we be able
     # to do this?
@@ -46,7 +47,7 @@ dynasnip "edit", %{
 }, :template => %{
   <form action="<%= Router.url_to "save" %>">
   <dl>
-    <% @snip.attributes.each do |name, value| %>
+    <% @snip_to_edit.attributes.each do |name, value| %>
     <dt><%= name %></dt>
     <% num_rows = value.split("\n").length + 1 %>
     <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%= value.gsub("&", "&amp;").gsub(">", "&gt;").gsub("<", "&lt;") %></textarea></dd>
@@ -54,7 +55,7 @@ dynasnip "edit", %{
   </dl>
   <button name='save_button'>Save</button>
   </form>
-}
+}, :render_as => "Ruby"
 
 dynasnip "new", %{
 class NewSnip < Dynasnip
@@ -75,6 +76,16 @@ class Debug < Dynasnip
 end
 Debug}
 
+dynasnip "current_snip", %{
+  class CurrentSnip < Dynasnip
+    def handle(*args)
+      puts "current snip: \#{context[:snip]}"
+      render context[:snip]
+    end
+  end
+  CurrentSnip
+}
+
 system = Snip.new(:name => "system")
 system.content = "You're in the system snip now. You probably want to {edit_link system,edit} it though."
 
@@ -92,11 +103,10 @@ system.main_template = <<-HTML
       <strong><%= @snip.name %></strong> &rarr; 
       <%= Router.edit_link(@snip.name, "Edit") %>
     </div>
-    <%= @rendered_snip %>
+    {current_snip}
   </div>
 </body>
 </html>
-
 HTML
 
 system.edit_template = <<-HTML
