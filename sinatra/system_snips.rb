@@ -24,6 +24,19 @@ class Linker
 end
 Linker}
 
+dynasnip "url_to", %{
+  class UrlTo
+    def handle(snip_name)
+      if Snip[snip_name]
+        Router.url_to(snip_name)
+      else
+        "[Snip '\#{snip_name}' not found]"
+      end
+    end
+  end
+  UrlTo  
+}
+
 dynasnip "edit", %{
   class EditSnip < Dynasnip
     def handle(*args)
@@ -50,7 +63,7 @@ dynasnip "edit", %{
     <% @snip_to_edit.attributes.each do |name, value| %>
     <dt><%= name %></dt>
     <% num_rows = value.split("\n").length + 1 %>
-    <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%= value.gsub("&", "&amp;").gsub(">", "&gt;").gsub("<", "&lt;") %></textarea></dd>
+    <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%=h value %></textarea></dd>
     <% end %>
   </dl>
   <button name='save_button'>Save</button>
@@ -99,9 +112,9 @@ system.main_template = <<-HTML
   <div id="content">
     <div id="controls">
       <strong><a href="/">home</a></strong>, 
-      <%= Router.new_link %> ::
+      <%= ::Router.new_link %> ::
       <strong><%= @snip.name %></strong> &rarr; 
-      <%= Router.edit_link(@snip.name, "Edit") %>
+      <%= ::Router.edit_link(@snip.name, "Edit") %>
     </div>
     {current_snip}
   </div>
