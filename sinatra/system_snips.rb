@@ -72,10 +72,6 @@ NewSnip
 dynasnip "debug", %{
 class Debug < Dynasnip
   def handle(*args)
-    # context.inspect
-    puts "snip: " + @snip.inspect
-    puts "part: " + @part.inspect
-    puts "context: " + @context.inspect
     context.inspect
   end
 end

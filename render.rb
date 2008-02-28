@@ -2,8 +2,9 @@ require 'rubygems'
 require 'soup'
 require 'dynasnip'
 
-# This module relies on the Router model, which should define the following methods
-# Router.new_link(snip_name)
+def debug(str)
+  # puts(str)
+end
 
 module Render
   def self.renderer_for(snip)
@@ -21,7 +22,7 @@ module Render
       "[Snip does not exist: #{snip_name}]"
     end
   rescue Exception => e
-    "<pre>[Error rendering '#{snip_name}' - " + e.message + "]</pre>"
+    "<pre>[Error rendering '#{snip_name}' - \"" + e.message + "\"]</pre>"
     # ": #{snip_name}\nBacktrace:\n#{e.backtrace.join('\n')}]</pre>" # this seems to produce a confusing backtick for Markdown.
   end
   
@@ -48,7 +49,7 @@ module Render
       @snip = snip
       @part = snip_part
       @args = args
-      puts "[#{self.object_id}] #{self.class.name}.new(#{snip.inspect}, #{snip_part.inspect}, #{args.inspect}, #{context.inspect})"
+      debug "[#{self.object_id}] #{self.class.name}.new(#{snip.inspect}, #{snip_part.inspect}, #{args.inspect}, #{context.inspect})"
     end
     
     # Handles processing the text of the content. Subclasses should
@@ -80,19 +81,20 @@ module Render
     end
     
     def render_without_including_snips
-      puts "[#{self.object_id}] rendering #{@snip.name} without including snips"
+      debug "[#{self.object_id}] rendering #{@snip.name} without including snips"
       raw_content = @snip.__send__(@part)
       process_text(@snip, raw_content, @args)
     end
     
     # Default rendering behaviour. Subclasses shouldn't really need to touch this.
     def render
-      puts "[#{self.object_id}] rendering #{@snip.name} including snips"
+      debug "[#{self.object_id}] rendering #{@snip.name} including snips"
       raw_content = @snip.__send__(@part)
       snip_expanded_content = include_snips(raw_content)
+      debug "---\n#{snip_expanded_content}\n---\n"
       r = process_text(@snip, snip_expanded_content, @args)
-      puts "[#{self.object_id}] DONE rendering #{@snip.name} including snips"
-      puts "---\n#{r}\n---\n"
+      debug "[#{self.object_id}] DONE rendering #{@snip.name} including snips"
+      debug "---\n#{r}\n---\n"
       r
     end
   end
