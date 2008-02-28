@@ -1,13 +1,9 @@
-$LOAD_PATH << "lib"
-$LOAD_PATH.uniq!
-
-require 'soup'
-require 'render'
+require File.join(File.dirname(__FILE__), *%w[snip_helper])
 
 dynasnip "edit_link", %{
 class EditSnipLink
   def handle(snip_name, link_text)
-    Router.edit_link(snip_name, link_text)
+    ::Router.edit_link(snip_name, link_text)
   end
 end
 EditSnipLink}
@@ -16,9 +12,9 @@ dynasnip "link_to", %{
 class Linker
   def handle(snip_name)
     if Snip[snip_name]
-      Router.link_to(snip_name)
+      ::Router.link_to(snip_name)
     else
-      Router.new_link(snip_name)
+      ::Router.new_link(snip_name)
     end
   end
 end
@@ -28,7 +24,7 @@ dynasnip "url_to", %{
   class UrlTo
     def handle(snip_name)
       if Snip[snip_name]
-        Router.url_to(snip_name)
+        ::Router.url_to(snip_name)
       else
         "[Snip '\#{snip_name}' not found]"
       end
@@ -47,8 +43,8 @@ dynasnip "edit", %{
       # context[:snip] = @snip
       # since we can affect the context, maybe we can override the instance variables
       # that ERB runs against
-      @snip_to_edit = Snip[context[:snip_to_edit]]
-      render_part_as_snip(Snip['edit'], :template, [], "Base")
+      # @snip_to_edit = Snip[context[:snip_to_edit]]
+      Render.render('edit', :template, [], context, Render::Erb)
     end
     # if the main template uses @snip.name for the HTML title, should we be able
     # to do this?
@@ -58,9 +54,10 @@ dynasnip "edit", %{
   end
   EditSnip
 }, :template => %{
-  <form action="<%= Router.url_to "save" %>">
+  <form action="<%= ::Router.url_to "save" %>">
   <dl>
-    <% @snip_to_edit.attributes.each do |name, value| %>
+    <% snip_to_edit = Snip[context[:snip_to_edit]] %>
+    <% snip_to_edit.attributes.each do |name, value| %>
     <dt><%= name %></dt>
     <% num_rows = value.split("\n").length + 1 %>
     <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%=h value %></textarea></dd>
@@ -84,7 +81,8 @@ NewSnip
 dynasnip "debug", %{
 class Debug < Dynasnip
   def handle(*args)
-    context.inspect
+    # context.inspect
+    [@snip, @part, @args, @context].inspect
   end
 end
 Debug}
@@ -93,7 +91,7 @@ dynasnip "current_snip", %{
   class CurrentSnip < Dynasnip
     def handle(*args)
       puts "current snip: \#{context[:snip]}"
-      render context[:snip]
+      Render.render context[:snip]
     end
   end
   CurrentSnip
@@ -122,34 +120,34 @@ system.main_template = <<-HTML
 </html>
 HTML
 
-system.edit_template = <<-HTML
-<html>
-<head>
-  <title>Editing '<%= @snip.name %>'</title>
-  <link rel="stylesheet" type="text/css" media="screen"  href="<%= Router.url_to("system", "css") %>" />
-</head>
-<body>
-  <div id="content">
-    <div id="controls">
-      <strong><a href="/">home</a></strong>, 
-      <%= Router.new_link %> ::
-      <%= Router.link_to @snip.name %> &rarr; 
-      <strong>Editing '<%= @snip.name %>'</strong>
-    </div>
-    <form action="<%= Router.url_to "save" %>">
-    <dl>
-      <% @snip.attributes.each do |name, value| %>
-      <dt><%= name %></dt>
-      <% num_rows = value.split("\n").length + 1 %>
-      <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%= value.gsub("&", "&amp;").gsub(">", "&gt;").gsub("<", "&lt;") %></textarea></dd>
-      <% end %>
-    </dl>
-    <button name='save_button'>Save</button>
-    </form>
-  </div>
-</body>
-</html>
-HTML
+# system.edit_template = <<-HTML
+# <html>
+# <head>
+#   <title>Editing '<%= @snip.name %>'</title>
+#   <link rel="stylesheet" type="text/css" media="screen"  href="<%= Router.url_to("system", "css") %>" />
+# </head>
+# <body>
+#   <div id="content">
+#     <div id="controls">
+#       <strong><a href="/">home</a></strong>, 
+#       <%= ::Router.new_link %> ::
+#       <%= ::Router.link_to @snip.name %> &rarr; 
+#       <strong>Editing '<%= @snip.name %>'</strong>
+#     </div>
+#     <form action="<%= ::Router.url_to "save" %>">
+#     <dl>
+#       <% @snip.attributes.each do |name, value| %>
+#       <dt><%= name %></dt>
+#       <% num_rows = value.split("\n").length + 1 %>
+#       <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%= value.gsub("&", "&amp;").gsub(">", "&gt;").gsub("<", "&lt;") %></textarea></dd>
+#       <% end %>
+#     </dl>
+#     <button name='save_button'>Save</button>
+#     </form>
+#   </div>
+# </body>
+# </html>
+# HTML
 
 dynasnip "save", <<-EOF
 class Save < Dynasnip

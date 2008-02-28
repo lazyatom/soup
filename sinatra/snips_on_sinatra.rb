@@ -32,38 +32,34 @@ module Router
   extend self
 end
 
-def renderer(params)
-  Render::Base.new(params)
-end
-
 def edit(snip_name)
-  @snip = Snip[snip_name]
-  erb renderer(params).render_part_as_snip(SystemSnip, :edit_template)
+  #@snip = Snip[snip_name]
+  #erb renderer(params).render_part_as_snip(SystemSnip, :edit_template)
+  Render.render('system', :edit_template, [], params, Render::Erb)
 end
 
-def raw(snip_name)
-  @snip = Snip[snip_name]
-  renderer(params).render(snip_name)
+def raw(snip_name, part=nil)
+  Render.render(snip_name, part || :content, [], params, Render::Base)
 end
 
 def show(snip_name)
-  @snip = Snip[snip_name]
-  Render::Erb.new(params).render(SystemSnip, :main_template)
+  #@snip = Snip[snip_name]
+  Render.render('system', :main_template, [], params, Render::Erb)
 end
 
-SystemSnip = Snip['system']
+# SystemSnip = Snip['system']
 
-def basic_unsaved_snip(params={})
-  Snip.new({:name => "", :content => "", :render_as => "Markdown"}.update(params))
-end
+# def basic_unsaved_snip(params={})
+#   Snip.new({:name => "", :content => "", :render_as => "Markdown"}.update(params))
+# end
 
 get '/' do
   show 'start'
 end  
 
-get '/new/:snip' do
-  edit basic_unsaved_snip(:name => params[:snip])
-end
+# get '/new/:snip' do
+#   edit basic_unsaved_snip(:name => params[:snip])
+# end
 
 get '/space/:snip' do
   show params[:snip]
@@ -74,7 +70,7 @@ get '/raw/:snip' do
 end
 
 get '/space/:snip/:part' do
-  renderer(params).render(params[:snip], params[:part])
+  raw params[:snip], params[:part]
 end
 
 get '/edit/:snip' do 

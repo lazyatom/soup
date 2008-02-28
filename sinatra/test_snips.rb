@@ -1,8 +1,4 @@
-$LOAD_PATH << "lib"
-$LOAD_PATH.uniq!
-
-require 'soup'
-require 'render'
+require File.join(File.dirname(__FILE__), *%w[snip_helper])
 
 s1 = Snip.new(:name => "start")
 s1.content =<<EOF

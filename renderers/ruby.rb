@@ -12,10 +12,10 @@ module Render
   class Ruby < Base
     def process_text(snip, content, args)
       handler_klass = eval(content, binding, snip.name)
-      instance = if handler_klass.instance_method(:initialize).arity == 0
-        handler_klass.new
+      instance = if handler_klass.ancestors.include?(Render::Base)
+        handler_klass.new(context, snip, nil, args)
       else
-        handler_klass.new(context)
+        handler_klass.new
       end
       instance.handle(*args).to_s
     end
