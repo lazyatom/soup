@@ -15,7 +15,6 @@ module Render
     if snip
       new_renderer = renderer || renderer_for(snip) || Render::Base
       part_to_render = snip_part || :content
-      puts "calling render on #{new_renderer.name} with #{snip.inspect}, #{part_to_render.inspect}, #{args.inspect}, #{context.inspect}"
       renderer_instance = new_renderer.new(snip, part_to_render, args, context)
       yield renderer_instance
     else
@@ -45,13 +44,11 @@ module Render
     attr_reader :context, :snip, :part, :args
     
     def initialize(snip, snip_part=:content, args=[], context={})
-      # We just pass this on to other objects - other
-      # renderers, really.
-      puts "#{self.class.name}.new(#{snip.inspect}, #{snip_part.inspect}, #{args.inspect}, #{context.inspect})"
       @context = context
       @snip = snip
       @part = snip_part
       @args = args
+      puts "[#{self.object_id}] #{self.class.name}.new(#{snip.inspect}, #{snip_part.inspect}, #{args.inspect}, #{context.inspect})"
     end
     
     # Handles processing the text of the content. Subclasses should
@@ -78,14 +75,23 @@ module Render
       end
     end
     
+    def prevent_snip_inclusion(content)
+      content.gsub("{", "&#123;").gsub("}" ,"&#125;")
+    end
+    
     def render_without_including_snips
+      puts "[#{self.object_id}] rendering #{@snip.name} without including snips"
       raw_content = @snip.__send__(@part)
       process_text(@snip, raw_content, @args)
     end
     
     # Default rendering behaviour. Subclasses shouldn't really need to touch this.
     def render
-      include_snips(render_without_including_snips)
+      puts "[#{self.object_id}] rendering #{@snip.name} including snips"
+      r = include_snips(render_without_including_snips)
+      puts "[#{self.object_id}] DONE rendering #{@snip.name} including snips"
+      puts "---\n#{r}\n---\n"
+      r
     end
   end
 end

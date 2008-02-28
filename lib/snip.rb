@@ -85,7 +85,7 @@ class Snip < BlankSlate
   end
   
   def inspect
-    "<Snip id:#{self.id || "unset"}>"
+    "<Snip id:#{self.id || "unset"} name:#{self.name}>"
   end
   
   def method_missing(method, *args)

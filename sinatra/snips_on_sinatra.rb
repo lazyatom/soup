@@ -28,7 +28,7 @@ module Router
   end
   
   def edit_link(snip_name, link_text)
-    %[<a href="/edit/#{snip_name}">#{link_text}</a>]
+    %[<a href="/space/edit?snip_to_edit=#{snip_name}">#{link_text}</a>]
   end
   
   def new_link(snip_name="New")
@@ -44,10 +44,15 @@ helpers do
     Render.render('system', :main_template, [], params, Render::Erb)
   end
 
+  # Render the content of this snip, but without recursing into other snips
+  def text(snip_name, part=nil)
+    Render.render_without_including_snips(snip_name, part || :content, [], params)
+  end
+
   # Return the raw content of the snip (or snip part)
   def raw(snip_name, part=nil)
     Render.render(snip_name, part || :content, [], params, Render::Raw)
-  end
+  end  
 end
 
 get('/') { redirect Router.url_to('start') }
@@ -57,5 +62,8 @@ get('/space/:snip/:part') { show params[:snip] }
    
 get('/raw/:snip') { raw params[:snip] }
 get('/raw/:snip/:part') { raw params[:snip], params[:part] }
+
+get('/text/:snip') { text params[:snip]  }
+get('/text/:snip/:part') { text params[:snip], params[:part] }
 
 

@@ -38,7 +38,7 @@ dynasnip "url_to", %{
 dynasnip "edit", %{
   class EditSnip < Dynasnip
     def handle(*args)
-      Render.render_without_including_snips('edit', :template, [], context, Render::Erb)
+      prevent_snip_inclusion(Render.render_without_including_snips('edit', :template, [], context, Render::Erb))
     end
   end
   EditSnip
@@ -109,7 +109,7 @@ system.main_template = <<-HTML
       <strong><a href="/">home</a></strong>, 
       <%= ::Router.new_link %> ::
       <strong><%= @snip.name %></strong> &rarr; 
-      <%= ::Router.edit_link(@snip.name, "Edit") %>
+      <%= ::Router.edit_link("{current_snip name}", "Edit") %>
     </div>
     {current_snip}
   </div>
