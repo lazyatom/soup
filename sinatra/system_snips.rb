@@ -56,7 +56,7 @@ dynasnip "edit", %{
   </form>
 }, :render_as => "Ruby"
 
-snip "blank", ""
+snip "blank", "", :render_as => ""
 
 dynasnip "new", %{
 class NewSnip < Dynasnip

@@ -32,7 +32,7 @@ module Router
   end
   
   def new_link(snip_name="New")
-    %[<a href="/new/#{snip_name}" class="new">#{snip_name}</a>]
+    %[<a href="/space/new" class="new">#{snip_name}</a>]
   end
   
   extend self
