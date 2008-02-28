@@ -21,8 +21,8 @@ module Render
       "[Snip does not exist: #{snip_name}]"
     end
   rescue Exception => e
-    "[<strong>Error</strong> - " + e.message + 
-    ": #{snip_name}<br/><em>Backtrace:</em><br/>#{e.backtrace.join('<br/>')}]"
+    "<pre>[Error rendering '#{snip_name}' - " + e.message + "]</pre>"
+    # ": #{snip_name}\nBacktrace:\n#{e.backtrace.join('\n')}]</pre>" # this seems to produce a confusing backtick for Markdown.
   end
   
   # render a snip using either the renderer given, or the renderer
@@ -88,7 +88,9 @@ module Render
     # Default rendering behaviour. Subclasses shouldn't really need to touch this.
     def render
       puts "[#{self.object_id}] rendering #{@snip.name} including snips"
-      r = include_snips(render_without_including_snips)
+      raw_content = @snip.__send__(@part)
+      snip_expanded_content = include_snips(raw_content)
+      r = process_text(@snip, snip_expanded_content, @args)
       puts "[#{self.object_id}] DONE rendering #{@snip.name} including snips"
       puts "---\n#{r}\n---\n"
       r

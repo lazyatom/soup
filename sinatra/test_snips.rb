@@ -46,8 +46,14 @@ textile = Snip.new(:name => "textile_example")
 textile.content =<<EOF
 
 # testing lists
+# because lists are common things
 
-what the *hell* are __you__ looking at? "Beyotch":http://example.com
+monkey
+
+what the *hell* are __you__ looking at?
+
+"Beyotch":http://example.com
+
 EOF
 textile.render_as = "Textile"
 textile.save
