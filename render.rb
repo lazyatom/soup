@@ -6,27 +6,39 @@ require 'dynasnip'
 # Router.new_link(snip_name)
 
 module Render
-  def self.class_called(renderer_name)
-    const_get(renderer_name)
+  def self.renderer_for(snip)
+    snip.render_as ? const_get(snip.render_as) : nil
   end
   
-  # render a snip using either the renderer given, or the renderer
-  # specified by the snip's "render_as" property, or Render::Base
-  # if nothing else is given.
-  def self.render(snip_name, snip_part=:content, args=[], context={}, renderer=nil)
+  def self.rendering(snip_name, snip_part=:content, args=[], context={}, renderer=nil)
     snip = Snip[snip_name]
     if snip
-      new_renderer = renderer || Render.class_called(snip.render_as) || Render::Base
+      new_renderer = renderer || renderer_for(snip) || Render::Base
       part_to_render = snip_part || :content
+      puts "calling render on #{new_renderer.name} with #{snip.inspect}, #{part_to_render.inspect}, #{args.inspect}, #{context.inspect}"
       renderer_instance = new_renderer.new(snip, part_to_render, args, context)
-      renderer_instance.render
+      yield renderer_instance
     else
       "[Snip does not exist: #{snip_name}]"
     end
   rescue Exception => e
     "[<strong>Error</strong> - " + e.message + 
     ": #{snip_name}<br/><em>Backtrace:</em><br/>#{e.backtrace.join('<br/>')}]"
-    
+  end
+  
+  # render a snip using either the renderer given, or the renderer
+  # specified by the snip's "render_as" property, or Render::Base
+  # if nothing else is given.
+  def self.render(snip_name, snip_part=:content, args=[], context={}, renderer=nil)
+    rendering(snip_name, snip_part, args, context, renderer) do |r|
+      r.render
+    end
+  end
+  
+  def self.render_without_including_snips(snip_name, snip_part=:content, args=[], context={}, renderer=nil)
+    rendering(snip_name, snip_part, args, context, renderer) do |r|
+      r.render_without_including_snips
+    end
   end
   
   class Base
@@ -35,6 +47,7 @@ module Render
     def initialize(snip, snip_part=:content, args=[], context={})
       # We just pass this on to other objects - other
       # renderers, really.
+      puts "#{self.class.name}.new(#{snip.inspect}, #{snip_part.inspect}, #{args.inspect}, #{context.inspect})"
       @context = context
       @snip = snip
       @part = snip_part
@@ -65,11 +78,14 @@ module Render
       end
     end
     
+    def render_without_including_snips
+      raw_content = @snip.__send__(@part)
+      process_text(@snip, raw_content, @args)
+    end
+    
     # Default rendering behaviour. Subclasses shouldn't really need to touch this.
     def render
-      raw_content = @snip.__send__(@part)
-      processed_content = process_text(@snip, raw_content, @args)
-      include_snips(processed_content)
+      include_snips(render_without_including_snips)
     end
   end
 end

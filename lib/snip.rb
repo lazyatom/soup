@@ -80,8 +80,12 @@ class Snip < BlankSlate
     new_tuples.each { |tuple| @tuples[tuple.name] = tuple }
   end
   
-  def inspect
+  def to_s
     "<Snip id:#{self.id || "unset"} #{tuples_as_string}>"
+  end
+  
+  def inspect
+    "<Snip id:#{self.id || "unset"}>"
   end
   
   def method_missing(method, *args)

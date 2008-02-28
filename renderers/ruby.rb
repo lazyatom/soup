@@ -13,7 +13,7 @@ module Render
     def process_text(snip, content, args)
       handler_klass = eval(content, binding, snip.name)
       instance = if handler_klass.ancestors.include?(Render::Base)
-        handler_klass.new(context, snip, nil, args)
+        handler_klass.new(snip, nil, args, context)
       else
         handler_klass.new
       end

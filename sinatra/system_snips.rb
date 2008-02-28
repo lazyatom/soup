@@ -33,24 +33,13 @@ dynasnip "url_to", %{
   UrlTo  
 }
 
+# The edit dyna will load the snip given in the 'snip_to_edit' part of the
+# params
 dynasnip "edit", %{
   class EditSnip < Dynasnip
     def handle(*args)
-      # @snip = Snip[args[0]]
-      # so this would render the template from the edit snip, but how do we set the
-      # values to the current snip?
-      # if we could set @snip, then ERB would take care of it. Perhaps that's the way.
-      # context[:snip] = @snip
-      # since we can affect the context, maybe we can override the instance variables
-      # that ERB runs against
-      # @snip_to_edit = Snip[context[:snip_to_edit]]
-      Render.render('edit', :template, [], context, Render::Erb)
+      Render.render_without_including_snips('edit', :template, [], context, Render::Erb)
     end
-    # if the main template uses @snip.name for the HTML title, should we be able
-    # to do this?
-    # def name
-    #   "Editing '\#{@snip.name}'"
-    # end
   end
   EditSnip
 }, :template => %{
@@ -67,10 +56,12 @@ dynasnip "edit", %{
   </form>
 }, :render_as => "Ruby"
 
+snip "blank", ""
+
 dynasnip "new", %{
 class NewSnip < Dynasnip
   def handle(*arg)
-    render(Snip['edit'].template, Snip.new(:name => context['name']))
+    Render.render('edit', :template, [], context.merge(:snip_to_edit => 'blank'), Render::Erb)
   end
 end
 NewSnip
@@ -82,7 +73,10 @@ dynasnip "debug", %{
 class Debug < Dynasnip
   def handle(*args)
     # context.inspect
-    [@snip, @part, @args, @context].inspect
+    puts "snip: " + @snip.inspect
+    puts "part: " + @part.inspect
+    puts "context: " + @context.inspect
+    context.inspect
   end
 end
 Debug}
@@ -90,8 +84,11 @@ Debug}
 dynasnip "current_snip", %{
   class CurrentSnip < Dynasnip
     def handle(*args)
-      puts "current snip: \#{context[:snip]}"
-      Render.render context[:snip]
+      if args[0] == 'name'
+        context[:snip]
+      else
+        Render.render(context[:snip], context[:part], args, context)
+      end
     end
   end
   CurrentSnip
@@ -103,8 +100,8 @@ system.content = "You're in the system snip now. You probably want to {edit_link
 system.main_template = <<-HTML
 <html>
 <head>
-  <title><%= @snip.name %></title>
-  <link rel="stylesheet" type="text/css" media="screen"  href="<%= Router.url_to("system", "css") %>" />
+  <title>{current_snip name}</title>
+  <link rel="stylesheet" type="text/css" media="screen"  href="<%= Router.url_to_raw("system", "css") %>" />
 </head>
 <body>
   <div id="content">
@@ -120,35 +117,6 @@ system.main_template = <<-HTML
 </html>
 HTML
 
-# system.edit_template = <<-HTML
-# <html>
-# <head>
-#   <title>Editing '<%= @snip.name %>'</title>
-#   <link rel="stylesheet" type="text/css" media="screen"  href="<%= Router.url_to("system", "css") %>" />
-# </head>
-# <body>
-#   <div id="content">
-#     <div id="controls">
-#       <strong><a href="/">home</a></strong>, 
-#       <%= ::Router.new_link %> ::
-#       <%= ::Router.link_to @snip.name %> &rarr; 
-#       <strong>Editing '<%= @snip.name %>'</strong>
-#     </div>
-#     <form action="<%= ::Router.url_to "save" %>">
-#     <dl>
-#       <% @snip.attributes.each do |name, value| %>
-#       <dt><%= name %></dt>
-#       <% num_rows = value.split("\n").length + 1 %>
-#       <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%= value.gsub("&", "&amp;").gsub(">", "&gt;").gsub("<", "&lt;") %></textarea></dd>
-#       <% end %>
-#     </dl>
-#     <button name='save_button'>Save</button>
-#     </form>
-#   </div>
-# </body>
-# </html>
-# HTML
-
 dynasnip "save", <<-EOF
 class Save < Dynasnip
   def handle(*args)
@@ -163,11 +131,11 @@ class Save < Dynasnip
       snip.__send__(:set_value, name, value)
     end
     snip.save
-    %{Saved snip \#{Router.link_to snip_attributes[:name]} ok}
+    %{Saved snip \#{::Router.link_to snip_attributes[:name]} ok}
   rescue Exception => e
     p snip_attributes
     Snip.new(snip_attributes).save
-    %{Created snip \#{Router.link_to snip_attributes[:name]} ok}
+    %{Created snip \#{::Router.link_to snip_attributes[:name]} ok}
   end
 end
 Save  

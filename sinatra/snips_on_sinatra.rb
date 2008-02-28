@@ -20,6 +20,12 @@ module Router
     url += "/#{part}" if part
     url
   end
+
+  def url_to_raw(snip_name, part=nil)
+    url = "/raw/#{snip_name}"
+    url += "/#{part}" if part
+    url
+  end
   
   def edit_link(snip_name, link_text)
     %[<a href="/edit/#{snip_name}">#{link_text}</a>]
@@ -32,48 +38,24 @@ module Router
   extend self
 end
 
-def edit(snip_name)
-  #@snip = Snip[snip_name]
-  #erb renderer(params).render_part_as_snip(SystemSnip, :edit_template)
-  Render.render('system', :edit_template, [], params, Render::Erb)
+helpers do
+  # render in main template
+  def show(snip_name)
+    Render.render('system', :main_template, [], params, Render::Erb)
+  end
+
+  # Return the raw content of the snip (or snip part)
+  def raw(snip_name, part=nil)
+    Render.render(snip_name, part || :content, [], params, Render::Raw)
+  end
 end
 
-def raw(snip_name, part=nil)
-  Render.render(snip_name, part || :content, [], params, Render::Base)
-end
+get('/') { redirect Router.url_to('start') }
 
-def show(snip_name)
-  #@snip = Snip[snip_name]
-  Render.render('system', :main_template, [], params, Render::Erb)
-end
+get('/space/:snip') { show params[:snip] }
+get('/space/:snip/:part') { show params[:snip] }
+   
+get('/raw/:snip') { raw params[:snip] }
+get('/raw/:snip/:part') { raw params[:snip], params[:part] }
 
-# SystemSnip = Snip['system']
-
-# def basic_unsaved_snip(params={})
-#   Snip.new({:name => "", :content => "", :render_as => "Markdown"}.update(params))
-# end
-
-get '/' do
-  show 'start'
-end  
-
-# get '/new/:snip' do
-#   edit basic_unsaved_snip(:name => params[:snip])
-# end
-
-get '/space/:snip' do
-  show params[:snip]
-end
-
-get '/raw/:snip' do
-  raw params[:snip]
-end
-
-get '/space/:snip/:part' do
-  raw params[:snip], params[:part]
-end
-
-get '/edit/:snip' do 
-  edit params[:snip]
-end
 
