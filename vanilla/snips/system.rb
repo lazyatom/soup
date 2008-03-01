@@ -12,7 +12,7 @@ system.main_template = <<-HTML
     <div id="controls">
       <strong><a href="/">home</a></strong>, 
       <%= ::Router.new_link %> ::
-      <strong><%= @snip.name %></strong> &rarr; 
+      <strong>{link_to_current_snip}</strong> &rarr; 
       <%= ::Router.edit_link("{current_snip name}", "Edit") %>
     </div>
     {current_snip}
