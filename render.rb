@@ -85,10 +85,13 @@ module Render
       process_text(@snip, raw_content, @args)
     end
     
+    def raw_content
+      @snip.__send__(@part)      
+    end
+    
     # Default rendering behaviour. Subclasses shouldn't really need to touch this.
     def render
       debug "[#{self.object_id}] rendering #{@snip.name} including snips"
-      raw_content = @snip.__send__(@part)
       snip_expanded_content = include_snips(raw_content)
       debug "---\n#{snip_expanded_content}\n---\n"
       r = process_text(@snip, snip_expanded_content, @args)
