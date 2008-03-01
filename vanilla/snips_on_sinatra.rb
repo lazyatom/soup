@@ -2,10 +2,12 @@ require 'rubygems'
 require 'sinatra'
 
 $LOAD_PATH << "lib"
+$LOAD_PATH << File.dirname(__FILE__)
 $LOAD_PATH.uniq!
 
 require 'soup'
 require 'render'
+require 'dynasnip'
 
 require 'erb'
 include ERB::Util

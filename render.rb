@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'soup'
-require 'dynasnip'
 
 def debug(str)
   # puts(str)
