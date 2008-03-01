@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), *%w[snip_helper])
 
-s1 = Snip.new(:name => "start")
-s1.content =<<EOF
+test = Snip.new(:name => "test")
+test.content =<<EOF
 Linking is good: {link_to bold}
 Here's a bold snip: {bold}
 
@@ -32,8 +32,8 @@ What about a missing snip? Lets try to include one: {monkey}
 And an error when running? {bad_dynasnip}
 
 EOF
-s1.render_as = "Markdown"
-s1.save
+test.render_as = "Markdown"
+test.save
 
 bold = Snip.new(:name => "bold")
 bold.content =<<EOF
@@ -82,18 +82,3 @@ class BadDynasnip
   end
 end
 BadDynasnip}
-
-snip "test", %[
-* monkey
-* jazz
-* feathers
-
-{debug}]
-
-if __FILE__ == $0
-  def render(snip_name, part=nil)
-    Render::Base.new.render(snip_name, part)
-  end
-  
-  puts render('start')
-end

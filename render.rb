@@ -81,10 +81,10 @@ module Render
     
     def render_without_including_snips
       debug "[#{self.object_id}] rendering #{@snip.name} without including snips"
-      raw_content = @snip.__send__(@part)
       process_text(@snip, raw_content, @args)
     end
     
+    # Returns the raw content for the selected part of the selected snip
     def raw_content
       @snip.__send__(@part)      
     end
@@ -92,12 +92,12 @@ module Render
     # Default rendering behaviour. Subclasses shouldn't really need to touch this.
     def render
       debug "[#{self.object_id}] rendering #{@snip.name} including snips"
-      snip_expanded_content = include_snips(raw_content)
-      debug "---\n#{snip_expanded_content}\n---\n"
-      r = process_text(@snip, snip_expanded_content, @args)
+      tmp = process_text(@snip, raw_content, @args) # include_snips(raw_content)
+      debug "---\n#{tmp}\n---\n"
+      tmp = include_snips(tmp) #process_text(@snip, tmp, @args)
       debug "[#{self.object_id}] DONE rendering #{@snip.name} including snips"
-      debug "---\n#{r}\n---\n"
-      r
+      debug "---\n#{tmp}\n---\n"
+      tmp
     end
   end
 end

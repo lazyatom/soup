@@ -14,7 +14,7 @@ include ERB::Util
 
 ActiveRecord::Base.establish_connection(
   :adapter => 'sqlite3',
-  :database => 'soup_development'
+  :database => 'soup_development.db'
 )
 
 module Router
