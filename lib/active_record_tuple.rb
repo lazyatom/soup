@@ -1,11 +1,6 @@
 require 'rubygems'
 require 'active_record'
 
-ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :database => 'soup_development'
-)
-
 class Tuple < ActiveRecord::Base
   def self.prepare_database
     ActiveRecord::Migration.create_table :tuples, :force => true do |t|

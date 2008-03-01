@@ -75,27 +75,6 @@ EOF
 textile.render_as = "Markdown"
 textile.save
 
-dynasnip "pre", <<-EOF
-class ShowContentInPreTag
-  def handle(snip_name)
-    %{<pre>\#{Snip[snip_name].content}</pre>}
-  end
-end
-ShowContentInPreTag
-EOF
-
-dynasnip "rand", <<-EOF
-class RandomNumber
-  def handle(min=1, max=100)
-    # arguments come in as strings, so we need to convert them.
-    min = min.to_i
-    max = max.to_i
-    (rand(max-min) + min)
-  end
-end
-RandomNumber
-EOF
-
 dynasnip "bad_dynasnip", %{
 class BadDynasnip
   def handle(*args)

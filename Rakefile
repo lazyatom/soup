@@ -1,6 +1,8 @@
 require 'rubygems'
 #Gem::manage_gems
 require 'rake/gempackagetask'
+require 'spec'
+require 'spec/rake/spectask'
 
 namespace :soup do
   soup_spec = Gem::Specification.new do |s|
@@ -22,3 +24,8 @@ namespace :soup do
 end
 
 task :default => ["soup:package"]
+
+Spec::Rake::SpecTask.new do |t|
+  t.libs << "lib"
+  t.spec_files = FileList["spec/**/*_spec.rb"]
+end

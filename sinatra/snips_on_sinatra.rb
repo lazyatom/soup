@@ -10,6 +10,11 @@ require 'render'
 require 'erb'
 include ERB::Util
 
+ActiveRecord::Base.establish_connection(
+  :adapter => 'sqlite3',
+  :database => 'soup_development'
+)
+
 module Router
   def link_to(snip_name, part=nil)
     %{<a href="#{Router.url_to(snip_name, part)}">#{snip_name}</a>}
