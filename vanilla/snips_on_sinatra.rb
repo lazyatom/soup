@@ -52,11 +52,11 @@ helpers do
       # render in main template
       Render.render('system', :main_template, [], params, Render::Erb)
     when 'raw'
-      # Render the content of this snip, but without recursing into other snips
-      Render.render_without_including_snips(snip_name, part || :content, [], params)
-    when 'text'
       # Return the raw content of the snip (or snip part)
       Render.render(snip_name, part || :content, [], params, Render::Raw)
+    when 'text'
+      # Render the content of this snip, but without recursing into other snips
+      Render.render_without_including_snips(snip_name, part || :content, [], params)
     else
       "Unknown format '#{params[:format]}'"
     end
