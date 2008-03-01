@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'sequel'
 
-DB = Sequel.sqlite 'soup_development'
+DB = Sequel.sqlite 'soup_development.db'
   
 class Tuple < Sequel::Model(:tuples)
   set_schema do

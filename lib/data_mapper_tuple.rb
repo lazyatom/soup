@@ -3,7 +3,7 @@ require 'data_mapper'
 
 DataMapper::Database.setup({
   :adapter  => 'sqlite3',
-  :database => 'soup_development'
+  :database => 'soup_development.db'
 })
 
 # This tuple implementation is broken - there's a weird interaction
