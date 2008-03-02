@@ -1,1 +1,1 @@
-snip "blank", "", :render_as => ""
+snip "blank", ""
