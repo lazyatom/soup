@@ -17,6 +17,9 @@ ActiveRecord::Base.establish_connection(
   :database => 'soup_development.db'
 )
 
+Sinatra::StaticEvent::MIME_TYPES.merge!({'' => 'text/plain'})
+Sinatra::StaticEvent::MIME_TYPES.merge!({'js' => 'text/javascript'})
+
 module Router
   def link_to(snip_name, part=nil)
     %{<a href="#{Router.url_to(snip_name, part)}">#{snip_name}</a>}
@@ -62,6 +65,8 @@ helpers do
     end
   end  
 end
+
+static('/public', 'vanilla/public')
 
 get('/') { redirect Router.url_to('start') }
 get('/:snip') { present params[:snip] }

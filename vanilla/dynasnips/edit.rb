@@ -9,14 +9,17 @@ dynasnip "edit", %{
   EditSnip
 }, :template => %{
   <form action="<%= ::Router.url_to "save" %>">
-  <dl>
+  <dl class="attributes">
     <% snip_to_edit = Snip[context[:snip_to_edit]] %>
     <% snip_to_edit.attributes.each do |name, value| %>
     <dt><%= name %></dt>
     <% num_rows = value.split("\n").length + 1 %>
     <dd><textarea name="<%= name %>" rows="<%= num_rows %>"><%=h value %></textarea></dd>
     <% end %>
+    <dt><input class="attribute_name" type="text"></input></dt>
+    <dd><textarea></textarea></dd>
   </dl>
+  <a href="#" id="add">Add</a>
   <button name='save_button'>Save</button>
   </form>
 }, :render_as => "Ruby"
