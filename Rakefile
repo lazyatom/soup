@@ -1,5 +1,4 @@
 require 'rubygems'
-#Gem::manage_gems
 require 'rake/gempackagetask'
 require 'spec'
 require 'spec/rake/spectask'
@@ -8,7 +7,7 @@ namespace :soup do
   soup_spec = Gem::Specification.new do |s|
     s.name             = "soup"
     s.summary          = "A mess of data"
-    s.version          = "0.1.0"
+    s.version          = "0.1.1"
     s.author           = "James Adam"
     s.email            = "james at lazyatom dot com"
     s.platform         = Gem::Platform::RUBY
