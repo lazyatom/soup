@@ -4,6 +4,7 @@ Soup is a bit of everything, summoned from nothing. Soup is like an imaginary fr
 Terrifying. And so:
 
   require 'soup'
+  Soup.prepare
 
   s = Snip.new
   s.name = "James"

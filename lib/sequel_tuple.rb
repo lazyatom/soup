@@ -13,12 +13,9 @@ class Tuple < Sequel::Model(:tuples)
     datetime :updated_at
   end
   
-  def self.connect_to_database(config)
-    # ummm... how?
-  end
-  
-  def self.prepare_database
-    create_table
+  def self.prepare_database(config)
+    # ummm... how to connect?
+    create_table # TODO: detect if the table already exists
   end
   
   def self.for_snip(id)

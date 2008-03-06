@@ -14,12 +14,9 @@ class Tuple < DataMapper::Base
   property :created_at, :datetime
   property :updated_at, :datetime
   
-  def self.connect_to_database(config)
+  def self.prepare_database(config)
     DataMapper::Database.setup(config)
-  end
-  
-  def self.prepare_database
-    DataMapper::Persistence.auto_migrate!
+    DataMapper::Persistence.auto_migrate! # TODO: detect if the table exists
   end
   
   def self.for_snip(id)

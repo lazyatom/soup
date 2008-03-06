@@ -2,11 +2,9 @@ require 'rubygems'
 require 'activerecord'
 
 class Tuple < ActiveRecord::Base
-  def self.connect_to_database(config)
+  def self.prepare_database(config)
     ActiveRecord::Base.establish_connection(config)
-  end
-  
-  def self.prepare_database
+    return if connection.tables.include?("tuples")
     ActiveRecord::Migration.create_table :tuples, :force => true do |t|
       t.column :snip_id, :integer
       t.column :name, :string

@@ -8,15 +8,28 @@ module Soup
     :database => 'soup.db'
   }
   
-  # Hmm. this metaphor is a bit rubbish.
-  def self.season_with(database_config)
+  DEFAULT_TUPLE_IMPLEMENTATION = "active_record_tuple"
+  
+  # Set the base of this soup, i.e. where to get the data. This is the
+  # database configuration, i.e.
+  #
+  #   Soup.base = {:database => 'my_soup.db'}
+  #
+  def self.base=(database_config)
     @database_config = database_config
   end
   
-  # Set the base of this soup - i.e. how to access the data
-  def self.base(tuple_implementation)
-    require "#{tuple_implementation}_tuple"
-    Tuple.connect_to_database(@database_config || DEFAULT_CONFIG)
+  # Call this to set which tuple implementation to use, i.e.
+  #
+  #   Soup.flavour = :active_record
+  #
+  def self.flavour=(tuple_implementation)
+    @tuple_implementation = "#{tuple_implementation}_tuple"
   end
   
+  # Get the soup ready!
+  def self.prepare
+    require @tuple_implementation || DEFAULT_TUPLE_IMPLEMENTATION
+    Tuple.prepare_database(DEFAULT_CONFIG.merge(@database_config || {}))
+  end
 end
