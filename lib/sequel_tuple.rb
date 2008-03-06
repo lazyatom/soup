@@ -13,8 +13,16 @@ class Tuple < Sequel::Model(:tuples)
     datetime :updated_at
   end
   
+  def self.connect_to_database(config)
+    # ummm... how?
+  end
+  
+  def self.prepare_database
+    create_table
+  end
+  
   def self.for_snip(id)
-    Tuple.filter(:snip_id => id).to_a
+    filter(:snip_id => id).to_a
   end
 
   # TODO: *totally* not threadsafe.
@@ -22,8 +30,3 @@ class Tuple < Sequel::Model(:tuples)
     max(:snip_id) + 1
   end
 end
-  
-  
-# Create the table with this:
-#
-# Tuple.create_table

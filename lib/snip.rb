@@ -1,5 +1,9 @@
 require 'rubygems'
-require 'blankslate'
+
+# Based on Builder's BlankSlate object
+class EmptyClass
+  instance_methods.each { |m| undef_method(m) unless m =~ /^(__|instance_eval)/ }
+end
 
 # methods called on Tuple:
 # Tuple.for_snip(id)
@@ -11,7 +15,7 @@ require 'blankslate'
 # Tuple#value
 # Tuple#destroy
 
-class Snip < BlankSlate
+class Snip < EmptyClass
   
   # Returns the snip with the given name (i.e. the snip with the tuple of "name" -> name)
   #

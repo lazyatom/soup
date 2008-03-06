@@ -1,7 +1,11 @@
 require 'rubygems'
-require 'active_record'
+require 'activerecord'
 
 class Tuple < ActiveRecord::Base
+  def self.connect_to_database(config)
+    ActiveRecord::Base.establish_connection(config)
+  end
+  
   def self.prepare_database
     ActiveRecord::Migration.create_table :tuples, :force => true do |t|
       t.column :snip_id, :integer
