@@ -3,7 +3,7 @@ require 'sequel'
 
 DB = Sequel.sqlite 'soup_development.db'
   
-class Tuple < Sequel::Model(:tuples)
+class SequelTuple < Sequel::Model(:tuples)
   set_schema do
     primary_key :id
     integer :snip_id

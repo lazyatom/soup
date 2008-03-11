@@ -1,7 +1,7 @@
 require 'snip'
 
 module Soup
-  VERSION = "0.1.3"
+  VERSION = "0.1.4"
   
   DEFAULT_CONFIG = {
     :adapter  => 'sqlite3',
@@ -27,9 +27,20 @@ module Soup
     @tuple_implementation = "#{tuple_implementation}_tuple"
   end
   
+  def self.tuple_class
+    @tuple_class ||= case @tuple_implementation
+    when "active_record_tuple", nil
+      ActiveRecordTuple
+    when "data_mapper_tuple"
+      DataMapperTuple
+    when "sequel_tuple"
+      SequelTuple
+    end
+  end
+  
   # Get the soup ready!
   def self.prepare
     require @tuple_implementation || DEFAULT_TUPLE_IMPLEMENTATION
-    Tuple.prepare_database(DEFAULT_CONFIG.merge(@database_config || {}))
+    tuple_class.prepare_database(DEFAULT_CONFIG.merge(@database_config || {}))
   end
 end

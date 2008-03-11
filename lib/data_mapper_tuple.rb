@@ -4,7 +4,7 @@ require 'data_mapper'
 # This tuple implementation is broken - there's a weird interaction
 # where values are not set within the web application.
 #
-class Tuple < DataMapper::Base
+class DataMapperTuple < DataMapper::Base
   
   property :snip_id, :integer
   

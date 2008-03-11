@@ -1,7 +1,9 @@
 require 'rubygems'
 require 'activerecord'
 
-class Tuple < ActiveRecord::Base
+class ActiveRecordTuple < ActiveRecord::Base
+  set_table_name :tuples
+  
   def self.prepare_database(config)
     ActiveRecord::Base.establish_connection(config)
     return if connection.tables.include?("tuples")

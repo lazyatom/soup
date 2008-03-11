@@ -20,7 +20,7 @@ class Snip < EmptyClass
   # Returns the snip with the given name (i.e. the snip with the tuple of "name" -> name)
   #
   def self.[](name)
-      tuples = Tuple.all_for_snip_named(name)
+      tuples = Soup.tuple_class.all_for_snip_named(name)
       snip = Snip.new(:__id => tuples.first.snip_id)
       snip.replace_tuples(tuples)
       snip
@@ -36,7 +36,7 @@ class Snip < EmptyClass
   # should return all Snips who have a 'created_at' value greater than '2007-01-01'.
   #
   def self.with(name, tuple_value_conditions=nil)
-    matching_tuples = Tuple.find_matching(name, tuple_value_conditions)
+    matching_tuples = Soup.tuple_class.find_matching(name, tuple_value_conditions)
     matching_tuples.map { |t| t.snip_id }.uniq.map { |snip_id| find(snip_id) }
   end
   
@@ -44,7 +44,7 @@ class Snip < EmptyClass
   # with the matching snip_id, gathered into a magical snip.)
   #
   def self.find(id)
-    raise "not found" unless (tuples = Tuple.for_snip(id)).any?
+    raise "not found" unless (tuples = Soup.tuple_class.for_snip(id)).any?
     snip = Snip.new(:__id => id)
     snip.replace_tuples(tuples)
     snip
@@ -75,7 +75,7 @@ class Snip < EmptyClass
   
   def reload
     return self unless self.id
-    replace_tuples(Tuple.for_snip(id))
+    replace_tuples(Soup.tuple_class.for_snip(id))
     self
   end
   
@@ -123,7 +123,7 @@ class Snip < EmptyClass
 
   def set_id_if_necessary
     if self.id.nil?
-      set_id(Tuple.next_snip_id)
+      set_id(Soup.tuple_class.next_snip_id)
       @tuples.values.each { |tuple| tuple.snip_id = self.id }
     end
   end
@@ -142,7 +142,7 @@ class Snip < EmptyClass
       tuple.value = value
     else
       attributes = {:snip_id => self.id, :name => name.to_s, :value => value}
-      tuple = @tuples[name.to_s] = Tuple.new(attributes)
+      tuple = @tuples[name.to_s] = Soup.tuple_class.new(attributes)
     end
     tuple.value
   end
