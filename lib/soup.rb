@@ -1,7 +1,7 @@
 require 'snip'
 
 module Soup
-  VERSION = "0.1.2"
+  VERSION = "0.1.3"
   
   DEFAULT_CONFIG = {
     :adapter  => 'sqlite3',

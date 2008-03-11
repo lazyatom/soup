@@ -1,4 +1,5 @@
 pkg
+doc
 *.log
 *.db
 .DS_Store

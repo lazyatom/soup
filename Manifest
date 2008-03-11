@@ -1,0 +1,10 @@
+lib/active_record_tuple.rb
+lib/data_mapper_tuple.rb
+lib/sequel_tuple.rb
+lib/snip.rb
+lib/soup.rb
+README
+spec/snip_spec.rb
+spec/soup_test.rb
+spec/spec_runner.rb
+Manifest

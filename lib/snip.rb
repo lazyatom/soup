@@ -2,7 +2,7 @@ require 'rubygems'
 
 # Based on Builder's BlankSlate object
 class EmptyClass
-  instance_methods.each { |m| undef_method(m) unless m =~ /^(__|instance_eval)/ }
+  instance_methods.each { |m| undef_method(m) unless m =~ /^(__|instance_eval|respond_to\?)/ }
 end
 
 # methods called on Tuple:
@@ -56,6 +56,10 @@ class Snip < EmptyClass
     set_id(attributes.delete(:__id))
     @tuples = {}
     attributes.each { |name, value| set_value(name, value) }
+  end
+  
+  def respond_to?(method)
+    attributes.keys.include?(method.to_s)
   end
   
   def save

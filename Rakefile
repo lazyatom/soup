@@ -1,23 +1,29 @@
 require 'rubygems'
-require 'rake/gempackagetask'
+#require 'rake/gempackagetask'
 
 require 'lib/soup'
 
-soup_spec = Gem::Specification.new do |s|
-  s.name             = "soup"
-  s.summary          = "A mess of data"
-  s.version          = Soup::VERSION
-  s.author           = "James Adam"
-  s.email            = "james at lazyatom dot com"
-  s.platform         = Gem::Platform::RUBY
-  s.files            = FileList["{lib}/**/*"].exclude("rdoc").to_a
-  s.require_path     = "lib"
-  s.has_rdoc         = true
-  s.extra_rdoc_files = ['README']
+begin
+  require 'echoe'
+
+  Echoe.new("soup", Soup::VERSION) do |soup|
+    soup.author = ["James Adam"]
+    soup.email = ["james@lazyatom.com"]
+    soup.description = File.readlines("README").first
+  end
+
+rescue LoadError
+  puts "You need to install the echoe gem to perform meta operations on this gem"
 end
 
-Rake::GemPackageTask.new(soup_spec) do |p|
-  p.gem_spec = soup_spec
+desc "Open an irb session preloaded with this library"
+task :console do
+  sh "irb -rubygems -r ./lib/soup.rb"
 end
 
-task :default => ["package"]
+# We have to run our own spec runner, because Snip will try to undefine
+# rspec's should methods using the default one
+task(:test) do
+  files = FileList['spec/**/*_spec.rb']
+  system "ruby spec/spec_runner.rb #{files} --format specdoc"
+end
