@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'sequel'
+gem 'sequel'
 
 DB = Sequel.sqlite 'soup_development.db'
   

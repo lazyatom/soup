@@ -1,5 +1,5 @@
 require 'rubygems'
-require 'data_mapper'
+gem 'data_mapper'
 
 # This tuple implementation is broken - there's a weird interaction
 # where values are not set within the web application.

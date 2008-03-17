@@ -1,4 +1,5 @@
 require 'rubygems'
+gem 'activerecord', '>=2.0.2'
 require 'activerecord'
 
 class ActiveRecordTuple < ActiveRecord::Base

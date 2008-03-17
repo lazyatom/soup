@@ -1,5 +1,4 @@
 require 'rubygems'
-#require 'rake/gempackagetask'
 
 require 'lib/soup'
 
@@ -10,6 +9,7 @@ begin
     soup.author = ["James Adam"]
     soup.email = ["james@lazyatom.com"]
     soup.description = File.readlines("README").first
+    soup.dependencies = ["activerecord >=2.0.2"]
   end
 
 rescue LoadError
