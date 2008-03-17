@@ -43,4 +43,16 @@ module Soup
     require @tuple_implementation || DEFAULT_TUPLE_IMPLEMENTATION
     tuple_class.prepare_database(DEFAULT_CONFIG.merge(@database_config || {}))
   end
+  
+  # Save the current state of the soup into a YAML file.
+  def self.preserve(filename='soup.yml')
+    snips = {}
+    1.upto(Soup.tuple_class.next_snip_id) do |id|
+      snip = Snip.find(id) rescue nil
+      snips[snip.name] = snip if snip
+    end
+    File.open(filename, 'w') do |f|
+      f.puts snips.to_yaml
+    end
+  end
 end

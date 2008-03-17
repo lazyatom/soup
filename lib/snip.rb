@@ -96,6 +96,10 @@ class Snip < EmptyClass
     "<Snip id:#{self.id || "unset"} name:#{self.name}>"
   end
   
+  def to_yaml(*args)
+    attributes.to_yaml(*args)
+  end
+  
   def method_missing(method, *args)
     value = args.length > 1 ? args : args.first
     if method.to_s =~ /(.*)=\Z/ # || value - could be a nice DSL touch.
