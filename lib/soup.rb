@@ -28,7 +28,7 @@ module Soup
   end
   
   def self.tuple_class
-    @tuple_class ||= case @tuple_implementation
+    @tuple_class ||= case (@tuple_implementation || DEFAULT_TUPLE_IMPLEMENTATION)
     when "active_record_tuple", nil
       ActiveRecordTuple
     when "data_mapper_tuple"

@@ -1,21 +1,26 @@
 require 'rubygems'
-gem 'data_mapper'
+gem 'datamapper'
+require 'data_mapper'
 
 # This tuple implementation is broken - there's a weird interaction
 # where values are not set within the web application.
 #
-class DataMapperTuple < DataMapper::Base
-  
-  property :snip_id, :integer
-  
-  property :name, :string
-  property :value, :text
-  
-  property :created_at, :datetime
-  property :updated_at, :datetime
-  
+class DataMapperTuple < DataMapper::Base  
   def self.prepare_database(config)
     DataMapper::Database.setup(config)
+    # NOTE: so um, this property stuff doesn't like it if you're not connected to the db
+    # lets only have it once we are?  Seems mental.
+    self.class_eval {
+      set_table_name 'tuples'
+      
+      property :snip_id, :integer
+
+      property :name, :string
+      property :value, :text
+
+      property :created_at, :datetime
+      property :updated_at, :datetime
+    }
     DataMapper::Persistence.auto_migrate! # TODO: detect if the table exists
   end
   
