@@ -11,6 +11,10 @@ describe Snip, "when newly created" do
   it "should return nil for any attributes" do
     @snip.other_attribute.should be_nil
   end
+  
+  it "should not have an id yet" do
+    @snip.id.should be_nil
+  end
 end
 
 
@@ -42,5 +46,13 @@ describe Snip, "when saving" do
     
     other_snip = Snip['something']
     other_snip.jazz.should == "smooth"
+  end
+  
+  it "should generate an id" do
+    @snip.name = "something"
+    @snip.save
+    
+    other_snip = Snip['something']
+    other_snip.id.should_not be_nil
   end
 end
