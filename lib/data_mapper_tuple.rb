@@ -21,7 +21,8 @@ class DataMapperTuple < DataMapper::Base
       property :created_at, :datetime
       property :updated_at, :datetime
     }
-    DataMapper::Persistence.auto_migrate! # TODO: detect if the table exists
+    return if self.table.exists? # NOTE - this probably isn't good enough (what if the schema has changed?)
+    DataMapper::Persistence.auto_migrate! 
   end
   
   def self.for_snip(id)

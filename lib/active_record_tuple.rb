@@ -7,7 +7,7 @@ class ActiveRecordTuple < ActiveRecord::Base
   
   def self.prepare_database(config)
     ActiveRecord::Base.establish_connection(config)
-    return if connection.tables.include?("tuples")
+    return if connection.tables.include?("tuples")  # NOTE - this probably isn't good enough (what if the schema has changed?)
     ActiveRecord::Migration.create_table :tuples, :force => true do |t|
       t.column :snip_id, :integer
       t.column :name, :string
