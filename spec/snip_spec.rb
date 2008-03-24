@@ -17,6 +17,23 @@ describe Snip, "when newly created" do
   end
 end
 
+describe Snip, "when being created with attributes" do
+  it "should set attributes as passed in" do
+    @snip = Snip.new(:beats => 'phat', :rhymes => 100)
+    @snip.beats.should == 'phat'
+    @snip.rhymes.should == 100
+  end
+  
+  it "should ignore any id passed in" do
+    @snip = Snip.new(:id => 1000) 
+    @snip.id.should be_nil
+  end
+  
+  it "should not ignore the secret __id" do
+    @snip = Snip.new(:__id => 1000)
+    @snip.id.should == 1000
+  end
+end
 
 describe Snip, "when setting attributes" do
   before(:each) { @snip = Snip.new }
@@ -34,10 +51,20 @@ describe Snip, "when setting attributes" do
     @snip.monkey = true
     @snip.should respond_to(:monkey)
   end
+  
+  it "should not allow setting of the id" do
+    @snip.id = 100
+    @snip.id.should_not == 100
+    @snip.id.should be_nil
+  end
 end
 
 describe Snip, "when saving" do
   before(:each) { @snip = Snip.new }
+  
+  it "should not save if there's no data" do
+    lambda { @snip.save }.should raise_error
+  end
   
   it "should return all attributes when reloading" do
     @snip.name = "something"
@@ -54,5 +81,14 @@ describe Snip, "when saving" do
     
     other_snip = Snip['something']
     other_snip.id.should_not be_nil
+  end
+  
+  it "should not overwrite an existing id created via __id" do
+    @snip = Snip.new(:__id => 100)
+    @snip.name = "something_else"
+    @snip.save
+    
+    other_snip = Snip['something_else']
+    other_snip.id.should == 100
   end
 end
