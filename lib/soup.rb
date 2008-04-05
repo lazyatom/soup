@@ -1,3 +1,6 @@
+# Let us require stuff in lib without saying lib/ all the time
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+
 require 'snip'
 
 module Soup
@@ -25,6 +28,8 @@ module Soup
   #
   def self.flavour=(tuple_implementation)
     @tuple_implementation = "#{tuple_implementation}_tuple"
+    # We want to reset the tuple class if we re-flavour the soup.
+    @tuple_class = nil
   end
   
   def self.tuple_class
