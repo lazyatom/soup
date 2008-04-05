@@ -23,7 +23,9 @@ end
 
 # We have to run our own spec runner, because Snip will try to undefine
 # rspec's should methods using the default one
-task(:test) do
+task(:spec) do
   files = FileList['spec/**/*_spec.rb']
-  system "ruby spec/spec_runner.rb #{files} --format specdoc"
+  system "ruby spec/spec_runner.rb #{files} --format specdoc --colour"
 end
+
+task :default => :spec
