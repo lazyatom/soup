@@ -1,5 +1,5 @@
 # Let us require stuff in lib without saying lib/ all the time
-$LOAD_PATH.unshift(File.dirname(__FILE__))
+$LOAD_PATH.unshift(File.dirname(__FILE__)).uniq!
 
 require 'snip'
 
