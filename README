@@ -6,26 +6,28 @@ Terrifying. And so:
   require 'soup'
   Soup.prepare
 
-  s = Snip.new
-  s.name = "James"
-  s.skills = "Bowstaff, nunchuck"
-  s.save
+  
+  Soup << { 
+    :name => "James",
+    :skills => "Bowstaff, nunchuck" 
+  }
   
   # ...much later...
   
-  s = Snip['james']
+  s = Soup['james']
   s.skills # => "Bowstaff, nunchuck"
   
-  x = Snip.new
-  x.mane = "Lush and thick"
-  x.teeth = "Sharp and ready"
-  x.position = "Above my bed!!!"
-  x.save
-  
-The point is that you can set any attribute on a Snip, and it will be persisted without care. 
-With reckless abandon, really.
+  Soup << {
+    :mane => "Lush and thick"
+    :teeth => "Sharp and ready"
+    :position => "Above my bed!!!" 
+  }
 
-The data can be stored using anything - Snip doesn't really care much about the underlying 
+  
+The point is that you can set any attribute on a Soup data, and it will be persisted without 
+care. With reckless abandon, really.
+
+The data can be stored using anything - Soup doesn't really care much about the underlying 
 persistence layer. I've written implementations using DataMapper, ActiveRecord and Sequel... 
 there are other implementations of course. Unknowable implementations. 
 Terrifying implementations. You Fool! Warren is Dead!
