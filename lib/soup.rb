@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__)).uniq!
 require 'snip'
 
 module Soup
-  VERSION = "0.1.5"
+  VERSION = "0.2.0"
   
   DEFAULT_CONFIG = {
     :adapter  => 'sqlite3',
@@ -48,6 +48,13 @@ module Soup
     require @tuple_implementation || DEFAULT_TUPLE_IMPLEMENTATION
     tuple_class.prepare_database(DEFAULT_CONFIG.merge(@database_config || {}))
   end
+  
+  # ==============
+  # The behaviour
+  #
+  # The idea is that the persistence layer implements these, but
+  # Soup itself doesn't care. It shouldn't actually care that it's
+  # returning Snips. 
   
   # Finds bits in the soup with the given name
   def self.[](name)
