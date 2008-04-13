@@ -83,7 +83,7 @@ describe Snip, "when saving" do
     @snip.name = "something"
     @snip.jazz = "smooth"
     @snip.save
-    p ActiveRecordTuple.find(:all)
+    
     other_snip = Soup['something']
     other_snip.jazz.should == "smooth"
   end
