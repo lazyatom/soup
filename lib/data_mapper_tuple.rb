@@ -29,11 +29,6 @@ class DataMapperTuple < DataMapper::Base
     all(:snip_id => id)
   end
   
-  def self.all_for_snip_named(name)
-    id = first(:name => "name", :value => name).snip_id
-    for_snip(id)
-  end
-  
   # TODO: *totally* not threadsafe.
   def self.next_snip_id
     database.query("SELECT MAX(snip_id) + 1 FROM tuples")[0] || 1

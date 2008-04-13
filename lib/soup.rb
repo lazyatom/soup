@@ -49,6 +49,22 @@ module Soup
     tuple_class.prepare_database(DEFAULT_CONFIG.merge(@database_config || {}))
   end
   
+  # Finds bits in the soup with the given name
+  def self.[](name)
+    sieve(:name, "='#{name}'").first
+  end
+  
+  # Finds bits in the soup that make the given attribute hash
+  def self.sieve(*args)
+    Snip.sieve(*args)
+  end
+  
+  def self.<<(attributes)
+    s = Snip.new(attributes)
+    s.save
+    s
+  end
+  
   # Save the current state of the soup into a YAML file.
   def self.preserve(filename='soup.yml')
     snips = {}

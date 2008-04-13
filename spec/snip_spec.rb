@@ -1,8 +1,13 @@
+require File.join(File.dirname(__FILE__), "spec_helper")
+
 Soup.base = {:database => "soup_test.db"}
 Soup.prepare
 
 describe Snip, "when newly created" do
-  before(:each) { @snip = Snip.new }
+  before(:each) do
+    clear_database
+    @snip = Snip.new
+  end
   
   it "should not have a name" do
     @snip.name.should be_nil
@@ -18,6 +23,8 @@ describe Snip, "when newly created" do
 end
 
 describe Snip, "when being created with attributes" do
+  before(:each) { clear_database }
+  
   it "should set attributes as passed in" do
     @snip = Snip.new(:beats => 'phat', :rhymes => 100)
     @snip.beats.should == 'phat'
@@ -36,7 +43,10 @@ describe Snip, "when being created with attributes" do
 end
 
 describe Snip, "when setting attributes" do
-  before(:each) { @snip = Snip.new }
+  before(:each) do
+    clear_database
+    @snip = Snip.new
+  end
   
   it "should allow setting attributes" do
     @snip.something = "blah"
@@ -60,7 +70,10 @@ describe Snip, "when setting attributes" do
 end
 
 describe Snip, "when saving" do
-  before(:each) { @snip = Snip.new }
+  before(:each) do
+    clear_database
+    @snip = Snip.new
+  end
   
   it "should not save if there's no data" do
     lambda { @snip.save }.should raise_error
@@ -70,8 +83,8 @@ describe Snip, "when saving" do
     @snip.name = "something"
     @snip.jazz = "smooth"
     @snip.save
-    
-    other_snip = Snip['something']
+    p ActiveRecordTuple.find(:all)
+    other_snip = Soup['something']
     other_snip.jazz.should == "smooth"
   end
   
@@ -79,7 +92,7 @@ describe Snip, "when saving" do
     @snip.name = "something"
     @snip.save
     
-    other_snip = Snip['something']
+    other_snip = Soup['something']
     other_snip.id.should_not be_nil
   end
   
@@ -88,7 +101,7 @@ describe Snip, "when saving" do
     @snip.name = "something_else"
     @snip.save
     
-    other_snip = Snip['something_else']
+    other_snip = Soup['something_else']
     other_snip.id.should == 100
   end
 end

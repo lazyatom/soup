@@ -1,3 +1,5 @@
+require 'soup'
+
 describe Soup, "when unflavoured or based" do
   before(:each) { Soup.class_eval { @database_config = nil; @tuple_class = nil } }
   it "should use the default database config" do
@@ -92,3 +94,17 @@ describe Soup, "when being flavoured" do
     Soup.tuple_class.should == nil
   end
 end
+
+# describe Soup, "when adding data to the soup" do
+#   before(:each) do
+#     Soup.base = {:database => "soup_test.db"}
+#     Soup.flavour = :active_record
+#     Soup.prepare
+#   end
+#   
+#   it "should create a new snip and save it" do
+#     attributes = {:name => 'monkey'}
+#     Snip.should_receive(:new).with(attributes)
+#     Soup << attributes
+#   end
+# end
