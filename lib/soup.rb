@@ -1,7 +1,7 @@
 # Let us require stuff in lib without saying lib/ all the time
 $LOAD_PATH.unshift(File.dirname(__FILE__)).uniq!
 
-require 'snip'
+require 'soup/snip'
 
 module Soup
   VERSION = "0.2.0"
@@ -35,42 +35,46 @@ module Soup
   def self.tuple_class
     @tuple_class ||= case (@tuple_implementation || DEFAULT_TUPLE_IMPLEMENTATION)
     when "active_record_tuple", nil
-      ActiveRecordTuple
+      Soup::Tuples::ActiveRecordTuple
     when "data_mapper_tuple"
-      DataMapperTuple
+      Soup::Tuples::DataMapperTuple
     when "sequel_tuple"
-      SequelTuple
+      Soup::Tuples::SequelTuple
     end
   end
   
   # Get the soup ready!
   def self.prepare
-    require @tuple_implementation || DEFAULT_TUPLE_IMPLEMENTATION
+    require "soup/tuples/#{@tuple_implementation || DEFAULT_TUPLE_IMPLEMENTATION}"
     tuple_class.prepare_database(DEFAULT_CONFIG.merge(@database_config || {}))
   end
   
-  # ==============
-  # The behaviour
-  #
-  # The idea is that the persistence layer implements these, but
-  # Soup itself doesn't care. It shouldn't actually care that it's
-  # returning Snips. 
+  # The main interface
+  # ==================
   
-  # Finds bits in the soup with the given name
-  def self.[](name)
-    sieve(:name, "='#{name}'").first
-  end
-  
-  # Finds bits in the soup that make the given attribute hash
+  # Finds bits in the soup that make the given attribute hash.
+  # This method should eventually be delegated to the underlying persistence
+  # layers (i.e. Snips and Tuples, or another document database)
   def self.sieve(*args)
     Snip.sieve(*args)
   end
   
+  # Puts some data into the soup, and returns an object that contains
+  # that data. The object should respond to accessing and setting its
+  # attributes as if they were defined using attr_accessor on the object's
+  # class.
   def self.<<(attributes)
     s = Snip.new(attributes)
     s.save
     s
   end
+  
+  # A shortcut to sieve by name attribute only
+  def self.[](name)
+    sieve(:name, "='#{name}'").first
+  end
+  
+  # ==== (interface ends) =====
   
   # Save the current state of the soup into a YAML file.
   def self.preserve(filename='soup.yml')

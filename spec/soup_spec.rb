@@ -13,8 +13,8 @@ describe Soup do
   
     it "should use the default tuple implementation" do
       # No real idea how to mock the require, or use aught but Secret Knowledge that AR == Default
-      Soup.tuple_class.should == ActiveRecordTuple
-      ActiveRecordTuple.should_receive(:prepare_database)
+      Soup.tuple_class.should == Soup::Tuples::ActiveRecordTuple
+      Soup::Tuples::ActiveRecordTuple.should_receive(:prepare_database)
       Soup.prepare
     end
   
@@ -75,20 +75,20 @@ describe Soup do
     end
   
     it "should determine the tuple class based on the flavour" do
-      require 'data_mapper_tuple'
+      require 'soup/tuples/data_mapper_tuple'
       Soup.flavour = :data_mapper
-      Soup.tuple_class.should == DataMapperTuple
+      Soup.tuple_class.should == Soup::Tuples::DataMapperTuple
     end
   
     it "should allow the flavour to be set multiple times" do
-      require 'data_mapper_tuple'
+      require 'soup/tuples/data_mapper_tuple'
       Soup.flavour = :data_mapper
-      Soup.tuple_class.should == DataMapperTuple
+      Soup.tuple_class.should == Soup::Tuples::DataMapperTuple
     
-      require 'sequel_tuple'
+      require 'soup/tuples/sequel_tuple'
       Soup.flavour = :sequel
-      Soup.tuple_class.should_not == DataMapperTuple
-      Soup.tuple_class.should == SequelTuple
+      Soup.tuple_class.should_not == Soup::Tuples::DataMapperTuple
+      Soup.tuple_class.should == Soup::Tuples::SequelTuple
     end
   
     it "should use have no tuple class if the flavour is unknowable" do

@@ -4,3 +4,4 @@ doc
 *.db
 .DS_Store
 *~
+meta
