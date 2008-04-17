@@ -26,8 +26,8 @@ begin
     t.spec_opts = ["--format", "specdoc", "--colour"]
     t.spec_files = Dir['spec/**/*_spec.rb'].sort
     t.libs = ['lib']
-    t.rcov = true
-    t.rcov_dir = 'meta/coverage'
+    #t.rcov = true
+    #t.rcov_dir = 'meta/coverage'
   end
   
   task :show_rcov do
