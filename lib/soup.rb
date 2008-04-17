@@ -87,7 +87,7 @@ module Soup
     snips = {}
     1.upto(Soup.tuple_class.next_snip_id) do |id|
       snip = Snip.find(id) rescue nil
-      snips[snip.name] = snip if snip
+      snips[snip.id] = snip if snip
     end
     File.open(filename, 'w') do |f|
       f.puts snips.to_yaml
