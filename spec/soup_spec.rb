@@ -119,4 +119,30 @@ describe Soup do
     end
   end
 
+  describe "when sieving the soup" do
+    before(:each) do
+      Soup.base = {:database => "soup_test.db"}
+      Soup.flavour = :active_record
+      Soup.prepare
+      clear_database
+      @james = Soup << {:name => 'james', :spirit_guide => 'fox', :colour => 'blue', :powers => 'yes'}
+      @murray = Soup << {:name => 'murray', :spirit_guide => 'chaffinch', :colour => 'red', :powers => 'yes'}
+    end
+    
+    it "should find snips by name if the parameter is a string" do
+      Soup['james'].should == @james
+    end
+    
+    it "should find snips using exact matching of keys and values if the parameter is a hash" do
+      Soup[:name => 'murray'].should == @murray
+    end
+    
+    it "should match using all parameters" do
+      Soup[:powers => 'yes', :colour => 'red'].should == @james
+    end
+
+    it "should return an array if more than one snip matches" do
+      Soup[:powers => 'yes'].should == [@james, @murray]
+    end
+  end
 end

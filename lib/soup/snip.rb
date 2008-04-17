@@ -4,6 +4,7 @@ require 'soup/empty_class'
 # methods called on Tuple:
 # Tuple.for_snip(id)
 # Tuple.find_matching(tuple_name, tuple_value_conditions)
+# Tuple.find_matching_hash(key => value, key2 => value2, ...)
 # Tuple.next_snip_id
 # Tuple#save
 # Tuple#name
@@ -19,9 +20,18 @@ class Snip < Soup::EmptyClass
   #
   # should return all Snips who have a 'created_at' value greater than '2007-01-01'.
   #
-  def self.sieve(name, tuple_value_conditions=nil)
-    matching_tuples = Soup.tuple_class.find_matching(name, tuple_value_conditions)
-    matching_tuples.map { |t| t.snip_id }.uniq.map { |snip_id| find(snip_id) }
+  def self.sieve(*args)
+    if args.length > 1
+      name = args[0]
+      tuple_value_conditions = args[1]
+      matching_tuples = Soup.tuple_class.find_matching(name, tuple_value_conditions)
+      matching_tuples.map { |t| t.snip_id }.uniq.map { |snip_id| find(snip_id) }
+    else
+      pairs = args[0].inject([]) { |ary, (name, value)| ary << [name, value] }
+      matching_tuples = pairs.map { |(name, value)| Soup.tuple_class.find_matching(name, "='#{value}'") }.flatten
+      snips = matching_tuples.map { |t| t.snip_id }.uniq.map { |snip_id| find(snip_id) }
+      snips.reject { |s| pairs.map { |(name, value)| s.get_value(name) == value }.include?(false) }
+    end
   end
   
   # Returns the snip with the given ID (i.e. the collection of all tuples
@@ -97,6 +107,21 @@ class Snip < Soup::EmptyClass
     @id
   end
   
+  def get_value(name)
+    @tuples[name.to_s] ? @tuples[name.to_s].value : nil
+  end
+  
+  def set_value(name, value)
+    tuple = @tuples[name.to_s] 
+    if tuple
+      tuple.value = value
+    else
+      attributes = {:snip_id => self.id, :name => name.to_s, :value => value}
+      tuple = @tuples[name.to_s] = Soup.tuple_class.new(attributes)
+    end
+    tuple.value
+  end
+  
   
   private
   
@@ -118,21 +143,6 @@ class Snip < Soup::EmptyClass
   
   def tuples_as_string
     @tuples.inject("") { |hash, (name, tuple)| hash += " #{name}:'#{tuple.value}'" }.strip
-  end
-  
-  def get_value(name)
-    @tuples[name.to_s] ? @tuples[name.to_s].value : nil
-  end
-  
-  def set_value(name, value)
-    tuple = @tuples[name.to_s] 
-    if tuple
-      tuple.value = value
-    else
-      attributes = {:snip_id => self.id, :name => name.to_s, :value => value}
-      tuple = @tuples[name.to_s] = Soup.tuple_class.new(attributes)
-    end
-    tuple.value
   end
   
 end

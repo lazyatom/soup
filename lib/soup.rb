@@ -54,7 +54,8 @@ module Soup
   
   # Finds bits in the soup that make the given attribute hash.
   # This method should eventually be delegated to the underlying persistence
-  # layers (i.e. Snips and Tuples, or another document database)
+  # layers (i.e. Snips and Tuples, or another document database). The expected
+  # behaviour is 
   def self.sieve(*args)
     Snip.sieve(*args)
   end
@@ -70,8 +71,13 @@ module Soup
   end
   
   # A shortcut to sieve by name attribute only
-  def self.[](name)
-    sieve(:name, "='#{name}'").first
+  def self.[](*args)
+    results = if args[0].is_a?(Hash) || args.length > 1
+      sieve(*args)
+    else
+      sieve(:name => args[0])
+    end
+    results.length == 1 ? results.first : results
   end
   
   # ==== (interface ends) =====
