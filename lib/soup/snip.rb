@@ -1,9 +1,5 @@
 require 'rubygems'
-
-# Based on Builder's BlankSlate object
-class EmptyClass
-  instance_methods.each { |m| undef_method(m) unless m =~ /^(__|instance_eval|respond_to\?)/ }
-end
+require 'soup/empty_class'
 
 # methods called on Tuple:
 # Tuple.for_snip(id)
@@ -14,7 +10,7 @@ end
 # Tuple#value
 # Tuple#destroy
 
-class Snip < EmptyClass
+class Snip < Soup::EmptyClass
   
   # Returns all snips which match the given criteria, i.e. which have a tuple that
   # matches the given conditions. For example:
