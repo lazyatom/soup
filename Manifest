@@ -1,3 +1,4 @@
+lib/soup/empty_class.rb
 lib/soup/snip.rb
 lib/soup/tuples/active_record_tuple.rb
 lib/soup/tuples/data_mapper_tuple.rb

@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__)).uniq!
 require 'soup/snip'
 
 module Soup
-  VERSION = "0.2.0"
+  VERSION = "0.2.1"
   
   DEFAULT_CONFIG = {
     :adapter  => 'sqlite3',
