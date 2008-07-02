@@ -145,4 +145,22 @@ describe Soup do
       Soup[:powers => 'yes'].should == [@james, @murray]
     end
   end
+  
+  describe "when deleting snips" do
+    before(:each) do
+      Soup.base = {:database => "soup_test.db"}
+      Soup.flavour = :active_record
+      Soup.prepare
+      clear_database
+    end
+    
+    it "should allow deletion of snips" do
+      snip = Soup << {:name => 'test', :content => 'content'}
+      Soup['test'].should == snip
+      
+      Soup.destroy('test')
+      Soup['test'].should be_empty
+    end
+    
+  end
 end

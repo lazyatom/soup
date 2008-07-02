@@ -80,6 +80,11 @@ module Soup
     results.length == 1 ? results.first : results
   end
   
+  def self.destroy(snip_name)
+    snip = sieve(:name => snip_name)[0]
+    snip.destroy
+  end
+  
   # ==== (interface ends) =====
   
   # Save the current state of the soup into a YAML file.
