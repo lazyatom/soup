@@ -2,100 +2,115 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__)).uniq!
 
 require 'soup/snip'
+require 'yaml'
+require 'fileutils'
 
-module Soup
-  VERSION = "0.2.2"
-  
-  DEFAULT_CONFIG = {
-    :adapter  => 'sqlite3',
-    :database => 'soup.db'
-  }
-  
-  DEFAULT_TUPLE_IMPLEMENTATION = "active_record_tuple"
-  
-  # Set the base of this soup, i.e. where to get the data. This is the
-  # database configuration, i.e.
-  #
-  #   Soup.base = {:database => 'my_soup.db'}
-  #
-  def self.base=(database_config)
-    @database_config = database_config
+class Soup
+  VERSION = "0.9.9"
+
+  # You can access a default soup using this methods.
+
+  def self.default_instance #:nodoc:
+    @@instance ||= new
+  end
+
+  def self.[](*args)
+    default_instance[*args]
+  end
+
+  def self.<<(attributes)
+    default_instance << attributes
+  end
+
+  def self.sieve(*args)
+    default_instance.sieve(*args)
   end
   
-  # Call this to set which tuple implementation to use, i.e.
-  #
-  #   Soup.flavour = :active_record
-  #
-  def self.flavour=(tuple_implementation)
-    @tuple_implementation = "#{tuple_implementation}_tuple"
-    # We want to reset the tuple class if we re-flavour the soup.
-    @tuple_class = nil
+  def self.destroy(*args)
+    default_instance.destroy(*args)
   end
-  
-  def self.tuple_class
-    @tuple_class ||= case (@tuple_implementation || DEFAULT_TUPLE_IMPLEMENTATION)
-    when "active_record_tuple", nil
-      Soup::Tuples::ActiveRecordTuple
-    when "data_mapper_tuple"
-      Soup::Tuples::DataMapperTuple
-    when "sequel_tuple"
-      Soup::Tuples::SequelTuple
-    end
-  end
-  
+
+  attr_reader :base_path
+
   # Get the soup ready!
-  def self.prepare
-    require "soup/tuples/#{@tuple_implementation || DEFAULT_TUPLE_IMPLEMENTATION}"
-    tuple_class.prepare_database(DEFAULT_CONFIG.merge(@database_config || {}))
+  def initialize(base_path="soup")
+    @base_path = base_path
+    FileUtils.mkdir_p(base_path)
   end
-  
+
   # The main interface
   # ==================
-  
-  # Finds bits in the soup that make the given attribute hash.
-  # This method should eventually be delegated to the underlying persistence
-  # layers (i.e. Snips and Tuples, or another document database). The expected
-  # behaviour is 
-  def self.sieve(*args)
-    Snip.sieve(*args)
+
+  # A shorthand for #sieve, with the addition that only a name may be
+  # supplied (i.e. Soup['my snip'])
+  def [](conditions)
+    conditions = {:name => conditions} unless conditions.respond_to?(:keys)
+    sieve(conditions)
   end
-  
+
   # Puts some data into the soup, and returns an object that contains
   # that data. The object should respond to accessing and setting its
   # attributes as if they were defined using attr_accessor on the object's
   # class.
-  def self.<<(attributes)
-    s = Snip.new(attributes)
-    s.save
-    s
+  def <<(attributes)
+    save_snip(attributes)
+    Snip.new(attributes, self)
   end
-  
-  # A shortcut to sieve by name attribute only
-  def self.[](*args)
-    results = if args[0].is_a?(Hash) || args.length > 1
-      sieve(*args)
+
+  # Finds bits in the soup that make the given attribute hash.
+  # This method should eventually be delegated to the underlying persistence
+  # layers (i.e. Snips and Tuples, or another document database). The expected
+  # behaviour is
+  def sieve(conditions)
+    if conditions.keys == [:name]
+      load_snip(conditions[:name])
     else
-      sieve(:name => args[0])
+      all_snips.select do |s|
+        conditions.inject(true) do |matches, (key, value)|
+          matches && (s.__send__(key) == value)
+        end
+      end
     end
-    results.length == 1 ? results.first : results
+  end
+
+  def destroy(name)
+    File.delete(path_for(name))
+  end
+
+  private
+
+  def save_snip(attributes)
+    File.open(path_for(attributes[:name]), 'w') do |f| 
+      content = attributes.delete(:content)
+      f.write content
+      f.write attributes.to_yaml.gsub(/^---\s/, attribute_token)
+    end
+  end
+
+  def load_snip(name)
+    path = path_for(name)
+    if File.exist?(path)
+      file = File.read(path)
+      attribute_start = file.index(attribute_token)
+      content = file.slice(0...attribute_start)
+      attributes = YAML.load(file.slice(attribute_start..-1)).merge(:content => content)
+      Snip.new(attributes, self)
+    else
+      nil
+    end
+  end
+
+  def all_snips
+    Dir[path_for("*")].map do |path|
+      load_snip(File.basename(path, ".yml"))
+    end
+  end
+
+  def path_for(filename)
+    File.join(base_path, filename + ".yml")
   end
   
-  def self.destroy(snip_name)
-    snip = sieve(:name => snip_name)[0]
-    snip.destroy
-  end
-  
-  # ==== (interface ends) =====
-  
-  # Save the current state of the soup into a YAML file.
-  def self.preserve(filename='soup.yml')
-    snips = {}
-    1.upto(Soup.tuple_class.next_snip_id) do |id|
-      snip = Snip.find(id) rescue nil
-      snips[snip.id] = snip if snip
-    end
-    File.open(filename, 'w') do |f|
-      f.puts snips.to_yaml
-    end
+  def attribute_token
+    "--- # Soup attributes"
   end
 end
