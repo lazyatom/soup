@@ -33,8 +33,8 @@ class Soup
   attr_reader :base_path
 
   # Get the soup ready!
-  def initialize(base_path="soup")
-    @base_path = base_path
+  def initialize(base_path=nil)
+    @base_path = base_path || "soup"
     FileUtils.mkdir_p(base_path)
   end
 
