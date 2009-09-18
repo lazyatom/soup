@@ -28,7 +28,7 @@ class Snip < Soup::EmptyClass
   def method_missing(method, *args)
     value = args.length > 1 ? args : args.first
     if method.to_s =~ /(.*)=\Z/
-      @attributes[$1] = value
+      @attributes[$1.to_sym] = value
     else
       @attributes[method]
     end

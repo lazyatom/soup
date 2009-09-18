@@ -25,7 +25,7 @@ class Soup
   def self.sieve(*args)
     default_instance.sieve(*args)
   end
-  
+
   def self.destroy(*args)
     default_instance.destroy(*args)
   end
@@ -62,6 +62,7 @@ class Soup
   # layers (i.e. Snips and Tuples, or another document database). The expected
   # behaviour is
   def sieve(conditions)
+    conditions = symbolize_keys(conditions)
     if conditions.keys == [:name]
       load_snip(conditions[:name])
     else
@@ -77,10 +78,17 @@ class Soup
     File.delete(path_for(name))
   end
 
+  def all_snips
+    Dir[path_for("*")].map do |path|
+      load_snip(File.basename(path, ".yml"))
+    end
+  end
+
   private
 
   def save_snip(attributes)
-    File.open(path_for(attributes[:name]), 'w') do |f| 
+    attributes = symbolize_keys(attributes)
+    File.open(path_for(attributes[:name]), 'w') do |f|
       content = attributes.delete(:content)
       f.write content
       f.write attributes.to_yaml.gsub(/^---\s/, attribute_token)
@@ -100,17 +108,15 @@ class Soup
     end
   end
 
-  def all_snips
-    Dir[path_for("*")].map do |path|
-      load_snip(File.basename(path, ".yml"))
-    end
-  end
-
   def path_for(filename)
     File.join(base_path, filename + ".yml")
   end
-  
+
   def attribute_token
     "--- # Soup attributes"
+  end
+
+  def symbolize_keys(hash)
+    hash.inject({}) { |h,(k,v)| h[k.to_sym] = v; h }
   end
 end
