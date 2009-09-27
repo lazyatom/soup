@@ -1,7 +1,8 @@
 require 'soup/empty_class'
 
 class Snip < Soup::EmptyClass
-
+  attr_reader :attributes
+  
   def initialize(attributes = {}, soup = Soup)
     @attributes = attributes
     @soup = soup
