@@ -1,12 +1,6 @@
 lib/soup/empty_class.rb
 lib/soup/snip.rb
-lib/soup/tuples/active_record_tuple.rb
-lib/soup/tuples/data_mapper_tuple.rb
-lib/soup/tuples/sequel_tuple.rb
 lib/soup.rb
 Manifest
 README
-spec/snip_spec.rb
-spec/soup_spec.rb
-spec/spec_helper.rb
-spec/spec_runner.rb
+test/soup_test.rb
