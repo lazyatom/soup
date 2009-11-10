@@ -91,7 +91,7 @@ class Soup
     File.open(path_for(attributes[:name]), 'w') do |f|
       content = attributes.delete(:content)
       f.write content
-      f.write attributes.to_yaml.gsub(/^---\s/, attribute_token)
+      f.write attributes.to_yaml.gsub(/^---\s/, attribute_token) if attributes.any?
     end
   end
 
@@ -99,9 +99,12 @@ class Soup
     path = path_for(name)
     if File.exist?(path)
       file = File.read(path)
-      attribute_start = file.index(attribute_token)
-      content = file.slice(0...attribute_start)
-      attributes = YAML.load(file.slice(attribute_start..-1)).merge(:content => content)
+      if attribute_start = file.index(attribute_token)
+        content = file.slice(0...attribute_start)
+        attributes = YAML.load(file.slice(attribute_start..-1)).merge(:content => content)
+      else
+        attributes = {:content => file, :name => name}
+      end
       Snip.new(attributes, self)
     else
       nil
