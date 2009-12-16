@@ -101,7 +101,7 @@ class Soup
       file = File.read(path)
       if attribute_start = file.index(attribute_token)
         content = file.slice(0...attribute_start)
-        attributes = YAML.load(file.slice(attribute_start..-1)).merge(:content => content)
+        attributes = {:name => name}.merge(YAML.load(file.slice(attribute_start..-1)).merge(:content => content))
       else
         attributes = {:content => file, :name => name}
       end
