@@ -4,26 +4,25 @@ and will often talk to you, but when you look closely, they don't exist.
 Terrifying. And so:
 
   require 'soup'
-  Soup.prepare
+  soup = Soup.new(File.join("soup", __FILE__))
 
-  
-  Soup << { 
+  soup << { 
     :name => "James",
     :skills => "Bowstaff, nunchuck" 
   }
-  
+
   # ...much later...
-  
-  s = Soup['james']
+
+  s = soup['james']
   s.skills # => "Bowstaff, nunchuck"
-  
-  Soup << {
+
+  soup << {
     :mane => "Lush and thick"
     :teeth => "Sharp and ready"
     :position => "Above my bed!!!" 
   }
 
-  
+
 The point is that you can set any attribute on a Soup data, and it will be persisted without 
 care. With reckless abandon, really.
 
