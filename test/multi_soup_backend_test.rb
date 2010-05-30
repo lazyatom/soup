@@ -10,8 +10,8 @@ class MultiSoupBackendTest < Test::Unit::TestCase
       @basic_soup_backend_two = Soup::Backends::YAMLBackend.new(File.join(@base_path, "soup_two"))
       @soup_one = Soup.new(@basic_soup_backend_one)
       @soup_two = Soup.new(@basic_soup_backend_two)
-      multi_soup = Soup::Backends::MultiSoupBackend.new(@basic_soup_backend_one, @basic_soup_backend_two)
-      @soup = Soup.new(multi_soup)
+      multi_soup_backend = Soup::Backends::MultiSoupBackend.new(@basic_soup_backend_one, @basic_soup_backend_two)
+      @soup = Soup.new(multi_soup_backend)
     end
 
     teardown do
@@ -49,14 +49,18 @@ class MultiSoupBackendTest < Test::Unit::TestCase
 
     context "when a backend is read-only" do
       setup do
-        @soup_one = Soup.new(Soup::Backends::ReadOnly.new(@basic_soup_backend_one))
+        readonly_backend = Soup::Backends::ReadOnly.new(@basic_soup_backend_one)
+        @soup_one = Soup.new(readonly_backend)
         @soup_two = Soup.new(@basic_soup_backend_two)
-        multi_soup = Soup::Backends::MultiSoupBackend.new(@basic_soup_backend_one, @basic_soup_backend_two)
+        multi_soup_backend = Soup::Backends::MultiSoupBackend.new(readonly_backend, @basic_soup_backend_two)
+        @soup = Soup.new(multi_soup_backend)
       end
 
       should "store snips in the writeable backend" do
         @soup << {:name => "snip", :body => "hello"}
         assert_equal "hello", @soup["snip"].body
+        assert_nil @soup_one["snip"]
+        assert_not_nil @soup_two["snip"]
       end
     end
   end
