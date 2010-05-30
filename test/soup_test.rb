@@ -1,6 +1,4 @@
-require 'test/unit'
-require 'shoulda'
-require 'soup'
+require "test_helper"
 
 class SoupTest < Test::Unit::TestCase
 

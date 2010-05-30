@@ -1,6 +1,4 @@
-require 'test/unit'
-require 'shoulda'
-require 'soup'
+require "test_helper"
 
 class MultiSoupBackendTest < Test::Unit::TestCase
   context "A Soup with multiple backends" do
