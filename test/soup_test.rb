@@ -5,11 +5,18 @@ require 'soup'
 class SoupTest < Test::Unit::TestCase
 
   def self.each_backend(&block)
-    backends = [Soup::Backends::YAMLBackend.new(File.join(File.dirname(__FILE__), *%w[.. tmp soup]))]
+    base_path = File.join(File.dirname(__FILE__), *%w[.. tmp soup])
+    backends = [
+      yaml_backend = Soup::Backends::YAMLBackend.new(base_path),
+      Soup::Backends::MultiSoup.new(yaml_backend)
+    ]
     backends.each do |backend|
-      context "The #{backends.class.name} Soup backend" do
+      context "The #{backend.class.name} Soup backend" do
         setup do
           @soup = Soup.new(backend)
+        end
+        teardown do
+          FileUtils.rm_rf(base_path)
         end
         yield backend
       end
