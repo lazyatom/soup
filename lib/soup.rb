@@ -1,12 +1,12 @@
 # Let us require stuff in lib without saying lib/ all the time
 $LOAD_PATH.unshift(File.dirname(__FILE__)).uniq!
 
-require 'soup/snip'
 require 'yaml'
 require 'fileutils'
 
 class Soup
-  VERSION = "0.9.9"
+  autoload :Backends, 'soup/backends'
+  autoload :Snip, 'soup/snip'
 
   # You can access a default soup using this methods.
 
@@ -22,7 +22,7 @@ class Soup
     default_instance << attributes
   end
 
-  def self.sieve(*args)
+  def self.with(*args)
     default_instance.sieve(*args)
   end
 
@@ -30,22 +30,20 @@ class Soup
     default_instance.destroy(*args)
   end
 
-  attr_reader :base_path
-
   # Get the soup ready!
-  def initialize(base_path=nil)
-    @base_path = base_path || "soup"
-    FileUtils.mkdir_p(base_path)
+  def initialize(backend=nil)
+    @backend = backend || Soup::Backends::YAMLBackend.new
+    @backend.prepare
   end
 
   # The main interface
   # ==================
 
-  # A shorthand for #sieve, with the addition that only a name may be
-  # supplied (i.e. Soup['my snip'])
+  # A shorthand for #with, with the addition that only a name may be
+  # supplied (i.e. soup['my snip'])
   def [](conditions)
     conditions = {:name => conditions} unless conditions.respond_to?(:keys)
-    sieve(conditions)
+    with(conditions)
   end
 
   # Puts some data into the soup, and returns an object that contains
@@ -53,71 +51,22 @@ class Soup
   # attributes as if they were defined using attr_accessor on the object's
   # class.
   def <<(attributes)
-    save_snip(attributes)
-    Snip.new(attributes, self)
+    @backend.save_snip(symbolize_keys(attributes))
   end
 
   # Finds bits in the soup that make the given attribute hash.
   # This method should eventually be delegated to the underlying persistence
   # layers (i.e. Snips and Tuples, or another document database). The expected
   # behaviour is
-  def sieve(conditions)
-    conditions = symbolize_keys(conditions)
-    if conditions.keys == [:name]
-      load_snip(conditions[:name])
-    else
-      all_snips.select do |s|
-        conditions.inject(true) do |matches, (key, value)|
-          matches && (s.__send__(key) == value)
-        end
-      end
-    end
+  def with(conditions)
+    @backend.find(symbolize_keys(conditions))
   end
 
   def destroy(name)
-    File.delete(path_for(name))
-  end
-
-  def all_snips
-    Dir[path_for("*")].map do |path|
-      load_snip(File.basename(path, ".yml"))
-    end
+    @backend.destroy(name)
   end
 
   private
-
-  def save_snip(attributes)
-    attributes = symbolize_keys(attributes)
-    File.open(path_for(attributes[:name]), 'w') do |f|
-      content = attributes.delete(:content)
-      f.write content
-      f.write attributes.to_yaml.gsub(/^---\s/, attribute_token) if attributes.any?
-    end
-  end
-
-  def load_snip(name)
-    path = path_for(name)
-    if File.exist?(path)
-      file = File.read(path)
-      if attribute_start = file.index(attribute_token)
-        content = file.slice(0...attribute_start)
-        attributes = {:name => name}.merge(YAML.load(file.slice(attribute_start..-1)).merge(:content => content))
-      else
-        attributes = {:content => file, :name => name}
-      end
-      Snip.new(attributes, self)
-    else
-      nil
-    end
-  end
-
-  def path_for(filename)
-    File.join(base_path, filename + ".yml")
-  end
-
-  def attribute_token
-    "--- # Soup attributes"
-  end
 
   def symbolize_keys(hash)
     hash.inject({}) { |h,(k,v)| h[k.to_sym] = v; h }

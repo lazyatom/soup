@@ -3,18 +3,18 @@ require 'soup/empty_class'
 class Snip < Soup::EmptyClass
   attr_reader :attributes
   
-  def initialize(attributes = {}, soup = Soup)
+  def initialize(attributes, backend)
     @attributes = attributes
-    @soup = soup
+    @backend = backend
   end
 
   def save
-    @soup << @attributes
+    @backend.save_snip(@attributes)
     self
   end
 
   def destroy
-    @soup.destroy(self.name)
+    @backend.destroy(self.name)
     self
   end
 
