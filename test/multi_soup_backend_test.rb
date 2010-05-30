@@ -10,7 +10,7 @@ class MultiSoupBackendTest < Test::Unit::TestCase
       @basic_soup_backend_two = Soup::Backends::YAMLBackend.new(File.join(@base_path, "soup_two"))
       @soup_one = Soup.new(@basic_soup_backend_one)
       @soup_two = Soup.new(@basic_soup_backend_two)
-      multi_soup_backend = Soup::Backends::MultiSoupBackend.new(@basic_soup_backend_one, @basic_soup_backend_two)
+      multi_soup_backend = Soup::Backends::MultiSoup.new(@basic_soup_backend_one, @basic_soup_backend_two)
       @soup = Soup.new(multi_soup_backend)
     end
 
@@ -52,7 +52,7 @@ class MultiSoupBackendTest < Test::Unit::TestCase
         readonly_backend = Soup::Backends::ReadOnly.new(@basic_soup_backend_one)
         @soup_one = Soup.new(readonly_backend)
         @soup_two = Soup.new(@basic_soup_backend_two)
-        multi_soup_backend = Soup::Backends::MultiSoupBackend.new(readonly_backend, @basic_soup_backend_two)
+        multi_soup_backend = Soup::Backends::MultiSoup.new(readonly_backend, @basic_soup_backend_two)
         @soup = Soup.new(multi_soup_backend)
       end
 

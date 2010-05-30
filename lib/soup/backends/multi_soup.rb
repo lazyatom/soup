@@ -1,6 +1,6 @@
 class Soup
   module Backends
-    class MultiSoupBackend
+    class MultiSoup
       def initialize(*backends)
         @backends = backends
       end

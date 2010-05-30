@@ -7,7 +7,7 @@ class Soup
   # * #destroy(name) - should return true if the snip was removed, or false if otherwise
   module Backends
     autoload :YAMLBackend, 'soup/backends/yaml_backend'
-    autoload :MultiSoupBackend, 'soup/backends/multi_soup_backend'
+    autoload :MultiSoup, 'soup/backends/multi_soup'
     autoload :ReadOnly, 'soup/backends/read_only'
   end
 end
