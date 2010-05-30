@@ -1,38 +1,39 @@
 require 'soup/empty_class'
 
-class Snip < Soup::EmptyClass
-  attr_reader :attributes
-  
-  def initialize(attributes, backend)
-    @attributes = attributes
-    @backend = backend
-  end
+class Soup
+  class Snip < Soup::EmptyClass
+    attr_reader :attributes
 
-  def save
-    @backend.save_snip(@attributes)
-    self
-  end
+    def initialize(attributes, backend)
+      @attributes = attributes
+      @backend = backend
+    end
 
-  def destroy
-    @backend.destroy(self.name)
-    self
-  end
+    def save
+      @backend.save_snip(@attributes)
+      self
+    end
 
-  def inspect
-    "<Snip name:#{self.name}>"
-  end
+    def destroy
+      @backend.destroy(self.name)
+      self
+    end
 
-  def respond_to?(method)
-    @attributes.keys.include?(method.to_s)
-  end
+    def inspect
+      "<Snip name:#{self.name}>"
+    end
 
-  def method_missing(method, *args)
-    value = args.length > 1 ? args : args.first
-    if method.to_s =~ /(.*)=\Z/
-      @attributes[$1.to_sym] = value
-    else
-      @attributes[method]
+    def respond_to?(method)
+      @attributes.keys.include?(method.to_s)
+    end
+
+    def method_missing(method, *args)
+      value = args.length > 1 ? args : args.first
+      if method.to_s =~ /(.*)=\Z/
+        @attributes[$1.to_sym] = value
+      else
+        @attributes[method]
+      end
     end
   end
-
 end
