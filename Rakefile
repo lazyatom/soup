@@ -60,6 +60,21 @@ end
 
 task :package => :gemspec
 
+desc 'Release the gem to gemcutter and tag the repo'
+task :release => [:gemspec, :package] do
+  if `git diff --cached`.empty?
+    if `git tag`.split("\n").include?("v#{spec.version}")
+      raise "Version #{spec.version} has already been released"
+    end
+    `git add #{File.expand_path("../#{spec.name}.gemspec", __FILE__)}`
+    `git commit -m "Released version #{spec.version}"`
+    `git tag v#{spec.version}`
+    `gem push pkg/#{spec.name}-#{spec.version}.gem`
+  else
+    raise "Unstaged changes still waiting to be committed"
+  end
+end
+
 # Generate documentation
 Rake::RDocTask.new do |rd|
   rd.main = "README"
