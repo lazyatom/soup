@@ -46,5 +46,18 @@ class MultiSoupBackendTest < Test::Unit::TestCase
       @soup.destroy("snip")
       assert_nil @soup["snip"]
     end
+
+    context "when a backend is read-only" do
+      setup do
+        @soup_one = Soup.new(Soup::Backends::ReadOnly.new(@basic_soup_backend_one))
+        @soup_two = Soup.new(@basic_soup_backend_two)
+        multi_soup = Soup::Backends::MultiSoupBackend.new(@basic_soup_backend_one, @basic_soup_backend_two)
+      end
+
+      should "store snips in the writeable backend" do
+        @soup << {:name => "snip", :body => "hello"}
+        assert_equal "hello", @soup["snip"].body
+      end
+    end
   end
 end
