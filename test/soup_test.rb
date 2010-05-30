@@ -11,7 +11,7 @@ class SoupTest < Test::Unit::TestCase
         setup do
           @soup = Soup.new(backend)
         end
-        yield
+        yield backend
       end
     end
   end
