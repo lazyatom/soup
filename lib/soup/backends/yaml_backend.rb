@@ -11,10 +11,8 @@ class Soup
         FileUtils.mkdir_p(@base_path)
       end
 
-      def all_snips
-        Dir[path_for("*")].map do |key|
-          load_snip(File.basename(key, ".yml"))
-        end
+      def names
+        Dir[path_for("*")].map { |s| File.basename(s, ".yml") }
       end
 
       def find(conditions)
@@ -64,8 +62,16 @@ class Soup
         end
       end
 
+      private
+
       def path_for(name)
         File.join(@base_path, name + ".yml")
+      end
+
+      def all_snips
+        Dir[path_for("*")].map do |key|
+          load_snip(File.basename(key, ".yml"))
+        end
       end
     end
   end
