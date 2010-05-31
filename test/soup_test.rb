@@ -27,6 +27,11 @@ class SoupTest < Test::Unit::TestCase
       assert_equal "I like stuff, and things", @soup['test'].content
     end
 
+    should "return a snip when storing content" do
+      snip = @soup << {:name => 'test', :content => "I like stuff, and things"}
+      assert_equal "I like stuff, and things", snip.content
+    end
+
     context "when sieving the soup" do
       setup do
         @james = @soup << {:name => 'james', :spirit_guide => 'fox', :colour => 'blue', :powers => 'yes'}

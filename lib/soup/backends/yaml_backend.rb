@@ -45,9 +45,9 @@ class Soup
 
       def save_snip(attributes)
         File.open(path_for(attributes[:name]), 'w') do |f|
-          content = attributes.delete(:content)
-          f.write content
-          f.write attributes.to_yaml.gsub(/^---\s/, ATTRIBUTE_TOKEN) if attributes.any?
+          attributes_without_content = attributes.dup
+          f.write attributes_without_content.delete(:content)
+          f.write attributes_without_content.to_yaml.gsub(/^---\s/, ATTRIBUTE_TOKEN) if attributes_without_content.any?
         end
         Snip.new(attributes, self)
       end
