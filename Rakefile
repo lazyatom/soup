@@ -21,7 +21,7 @@ spec = Gem::Specification.new do |s|
   
   # Change these as appropriate
   s.name              = "soup"
-  s.version           = "0.9.12"
+  s.version           = "0.9.13"
   s.summary           = "A super-simple data store"
   s.author            = "James Adam"
   s.email             = "james@lazyatom.com"

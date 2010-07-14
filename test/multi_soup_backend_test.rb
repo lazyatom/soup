@@ -39,6 +39,17 @@ class MultiSoupBackendTest < Test::Unit::TestCase
       end
     end
 
+    context "when snips with a certain attribute exist in multiple backends" do
+      setup do
+        @soup_one << {:name => "snip1", :active => true}
+        @soup_two << {:name => "snip2", :active => true}
+      end
+
+      should "find matching snips from all backends" do
+        assert_equal 2, @soup[:active => true].length
+      end
+    end
+
     should "save snips" do
       @soup << {:name => "snip", :body => "bad snip"}
       @soup.destroy("snip")

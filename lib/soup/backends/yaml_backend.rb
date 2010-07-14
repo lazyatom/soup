@@ -1,6 +1,6 @@
 class Soup
   module Backends
-    class YAMLBackend
+    class YAMLBackend < Base
       ATTRIBUTE_TOKEN = "--- # Soup attributes"
 
       def initialize(path="soup")
@@ -13,18 +13,6 @@ class Soup
 
       def names
         Dir[path_for("*")].map { |s| File.basename(s, ".yml") }
-      end
-
-      def find(conditions)
-        if conditions.keys == [:name]
-          load_snip(conditions[:name])
-        else
-          all_snips.select do |s|
-            conditions.inject(true) do |matches, (key, value)|
-              matches && (s.__send__(key) == value)
-            end
-          end
-        end
       end
 
       def load_snip(name)

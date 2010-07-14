@@ -1,6 +1,6 @@
 class Soup
   module Backends
-    class MultiSoup
+    class MultiSoup < Base
       def initialize(*backends)
         @backends = backends
       end
@@ -17,6 +17,13 @@ class Soup
         end
         nil
       end
+
+      private
+
+      def all_snips
+        @backends.map { |b| b.send(:all_snips) }.flatten
+      end
+
     end
   end
 end

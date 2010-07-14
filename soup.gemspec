@@ -2,14 +2,14 @@
 
 Gem::Specification.new do |s|
   s.name = %q{soup}
-  s.version = "0.9.12"
+  s.version = "0.9.13"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["James Adam"]
-  s.date = %q{2010-05-31}
+  s.date = %q{2010-07-14}
   s.email = %q{james@lazyatom.com}
   s.extra_rdoc_files = ["README"]
-  s.files = ["Manifest", "Rakefile", "README", "test/multi_soup_backend_test.rb", "test/soup_test.rb", "test/test_helper.rb", "lib/soup", "lib/soup/backends", "lib/soup/backends/multi_soup.rb", "lib/soup/backends/read_only.rb", "lib/soup/backends/yaml_backend.rb", "lib/soup/backends.rb", "lib/soup/empty_class.rb", "lib/soup/snip.rb", "lib/soup.rb"]
+  s.files = ["Manifest", "Rakefile", "README", "test/multi_soup_backend_test.rb", "test/soup_test.rb", "test/test_helper.rb", "lib/soup/backends/base.rb", "lib/soup/backends/multi_soup.rb", "lib/soup/backends/read_only.rb", "lib/soup/backends/yaml_backend.rb", "lib/soup/backends.rb", "lib/soup/empty_class.rb", "lib/soup/snip.rb", "lib/soup.rb"]
   s.homepage = %q{http://lazyatom.com}
   s.rdoc_options = ["--main", "README"]
   s.require_paths = ["lib"]
