@@ -10,5 +10,6 @@ class Soup
     autoload :YAMLBackend, 'soup/backends/yaml_backend'
     autoload :MultiSoup, 'soup/backends/multi_soup'
     autoload :ReadOnly, 'soup/backends/read_only'
+    autoload :FileBackend, 'soup/backends/file_backend'
   end
 end

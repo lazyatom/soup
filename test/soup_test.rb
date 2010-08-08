@@ -6,6 +6,7 @@ class SoupTest < Test::Unit::TestCase
     base_path = File.join(File.dirname(__FILE__), *%w[.. tmp soup])
     backends = [
       yaml_backend = Soup::Backends::YAMLBackend.new(base_path),
+      file_backend = Soup::Backends::FileBackend.new(base_path),
       Soup::Backends::MultiSoup.new(yaml_backend)
     ]
     backends.each do |backend|

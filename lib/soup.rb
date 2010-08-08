@@ -32,7 +32,7 @@ class Soup
 
   # Get the soup ready!
   def initialize(backend=nil)
-    @backend = backend || Soup::Backends::YAMLBackend.new
+    @backend = backend || Soup::Backends::FileBackend.new
     @backend.prepare
   end
 
