@@ -60,8 +60,8 @@ end
 
 task :package => :gemspec
 
-desc 'Release the gem to gemcutter and tag the repo'
-task :release => [:gemspec, :package] do
+desc 'Tag the repository in git with gem version number'
+task :tag => [:gemspec, :package] do
   if `git diff --cached`.empty?
     if `git tag`.split("\n").include?("v#{spec.version}")
       raise "Version #{spec.version} has already been released"
@@ -69,10 +69,16 @@ task :release => [:gemspec, :package] do
     `git add #{File.expand_path("../#{spec.name}.gemspec", __FILE__)}`
     `git commit -m "Released version #{spec.version}"`
     `git tag v#{spec.version}`
-    `gem push pkg/#{spec.name}-#{spec.version}.gem`
+    `git push --tags`
+    `git push`
   else
     raise "Unstaged changes still waiting to be committed"
   end
+end
+
+desc 'Release the gem to gemcutter and tag the repo'
+task :release => [:tag] do
+  `gem push pkg/#{spec.name}-#{spec.version}.gem`
 end
 
 # Generate documentation
