@@ -1,5 +1,6 @@
 require "test_helper"
 require "ftools"
+require "time"
 
 class FileBackendTest < Test::Unit::TestCase
   context "The file-based backend" do
@@ -39,20 +40,20 @@ of the snip
 
     should "take updated_at and created_at from file timestamps if not supplied" do
       @soup << {:name => "snip", :content => "whatever"}
-      updated = Time.parse("2010-11-04 14:56")
-      File.utime(updated, updated, path_for("snip"))
+      time = Time.parse("2010-11-04 14:56")
+      File.utime(time, time, path_for("snip"))
 
       snip = @soup["snip"]
-      assert_equal updated, snip.updated_at
-      assert_equal Time.now.to_i, snip.created_at.to_i
+      assert_equal time, snip.updated_at
+      assert_equal time, snip.created_at
     end
 
     should "take created_at from attributes if supplied" do
-      now = Time.now
-      @soup << {:name => "snip", :content => "whatever", :updated_at => now}
+      created_at = Time.parse("2010-11-04 14:56")
+      @soup << {:name => "snip", :content => "whatever", :created_at => created_at}
 
       snip = @soup["snip"]
-      assert_equal now.to_i, snip.created_at.to_i
+      assert_equal created_at.to_i, snip.created_at.to_i
     end
   end
 

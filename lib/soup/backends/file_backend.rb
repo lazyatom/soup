@@ -18,7 +18,7 @@ class Soup
         if File.exist?(path)
           file = File.new(path)
           data = file.read
-          default_attributes = {:name => name, :updated_at => file.mtime, :created_at => file.ctime}
+          default_attributes = {:name => name, :updated_at => file.mtime, :created_at => file.mtime}
           if attribute_start = data.index("\n:")
             content = data[0, attribute_start].strip
             attributes = default_attributes.merge(YAML.load(data[attribute_start, data.length]).merge(:content => content))
