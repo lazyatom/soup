@@ -17,12 +17,12 @@ class SoupTest < Test::Unit::TestCase
         teardown do
           FileUtils.rm_rf(base_path)
         end
-        yield backend
+        yield
       end
     end
   end
 
-  each_backend do |backend|
+  each_backend do
     should "be able to store content" do
       @soup << {:name => 'test', :content => "I like stuff, and things"}
       assert_equal "I like stuff, and things", @soup['test'].content
