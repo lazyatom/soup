@@ -21,10 +21,11 @@ class Soup
           default_attributes = {:name => name, :updated_at => file.mtime, :created_at => file.mtime}
           if attribute_start = data.index("\n:")
             content = data[0, attribute_start].strip
-            attributes = default_attributes.merge(YAML.load(data[attribute_start, data.length]).merge(:content => content))
+            attributes = default_attributes.merge(YAML.load(data[attribute_start, data.length]))
           else
-            attributes = default_attributes.merge(:content => data)
+            attributes = default_attributes
           end
+          attributes.update(:content => content) if content && content.length > 0
           Snip.new(attributes, self)
         else
           nil

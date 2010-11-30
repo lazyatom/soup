@@ -19,8 +19,15 @@ class Soup
       self
     end
 
+    def ==(other)
+      other.is_a?(Snip) && matching_attributes(other)
+    end
+
     def inspect
-      "<Snip name:#{self.name}>"
+      keys = @attributes.keys.dup
+      keys.delete(:name)
+      attrs = keys.inject([[:name, self.name]]) { |a, key| a + [[key, @attributes[key]]] }
+      "<Snip #{attrs.map { |(key,value)| "#{key}:#{value.inspect}"}.join(" ")}>"
     end
 
     def respond_to?(method)
@@ -34,6 +41,18 @@ class Soup
       else
         @attributes[method]
       end
+    end
+
+    private
+
+    def matching_attributes(other)
+      my_attributes = self.attributes.dup
+      their_attributes = other.attributes.dup
+      [:created_at, :updated_at].each do |attribute_to_ignore|
+        my_attributes.delete(attribute_to_ignore)
+        their_attributes.delete(attribute_to_ignore)
+      end
+      my_attributes == their_attributes
     end
   end
 end

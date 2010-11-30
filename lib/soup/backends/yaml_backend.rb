@@ -21,10 +21,11 @@ class Soup
           file = File.read(path)
           if attribute_start = file.index(ATTRIBUTE_TOKEN)
             content = file.slice(0...attribute_start)
-            attributes = {:name => name}.merge(YAML.load(file.slice(attribute_start..-1)).merge(:content => content))
+            attributes = {:name => name}.merge(YAML.load(file.slice(attribute_start..-1)))
           else
             attributes = {:content => file, :name => name}
           end
+          attributes.update(:content => content) if content && content.length > 0
           Snip.new(attributes, self)
         else
           nil
