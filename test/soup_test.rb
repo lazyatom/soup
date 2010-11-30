@@ -48,7 +48,7 @@ class SoupTest < Test::Unit::TestCase
       end
 
       should "match using all parameters" do
-        assert_equal @james, @soup[:powers => 'yes', :colour => 'red']
+        assert_equal [@murray], @soup[:powers => 'yes', :colour => 'red']
       end
 
       should "return an array if more than one snip matches" do
