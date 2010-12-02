@@ -8,7 +8,7 @@ def each_backend(&block)
     Soup::Backends::MultiSoup.new(yaml_backend)
   ]
   backends.each do |backend|
-    context "The #{backend.class.name} Soup backend" do
+    describe backend.class do
       setup do
         @soup = Soup.new(backend)
       end
