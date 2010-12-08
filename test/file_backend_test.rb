@@ -4,7 +4,6 @@ require "time"
 
 context "The file-based backend" do
   setup do
-    @base_path = File.join(File.dirname(__FILE__), *%w[.. tmp soup])
     @soup = Soup.new(Soup::Backends::FileBackend.new(@base_path))
   end
 

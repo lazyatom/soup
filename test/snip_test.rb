@@ -22,7 +22,6 @@ context "A snip" do
 
   context "loaded from the soup" do
     setup do
-      @base_path = File.join(File.dirname(__FILE__), *%w[.. tmp soup])
       backend = Soup::Backends::FileBackend.new(@base_path)
       @soup = Soup.new(backend)
     end

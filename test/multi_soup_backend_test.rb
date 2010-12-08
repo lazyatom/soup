@@ -2,7 +2,6 @@ require "test_helper"
 
 context "A Soup with multiple backends" do
   setup do
-    @base_path = File.join(File.dirname(__FILE__), *%w[.. tmp soup])
     @basic_soup_backend_one = Soup::Backends::YAMLBackend.new(File.join(@base_path, "soup_one"))
     @basic_soup_backend_two = Soup::Backends::FileBackend.new(File.join(@base_path, "soup_two"))
     @soup_one = Soup.new(@basic_soup_backend_one)
