@@ -64,13 +64,11 @@ of the snip
     assert_equal created_at.to_i, snip.created_at.to_i
   end
 
-  helpers do
-    def path_for(name)
-      File.join(@base_path, name + ".snip")
-    end
+  def path_for(name)
+    File.join(@base_path, name + ".snip")
+  end
 
-    def write_snip(name, content)
-      File.open(path_for(name), "w") { |f| f.write content.strip }
-    end
+  def write_snip(name, content)
+    File.open(path_for(name), "w") { |f| f.write content.strip }
   end
 end

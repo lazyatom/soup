@@ -6,11 +6,11 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    shoulda (2.11.3)
+    kintama (0.1.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  shoulda
+  kintama
   soup!
