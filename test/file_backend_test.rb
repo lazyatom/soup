@@ -38,6 +38,11 @@ of the snip
       assert_equal "blahface", @soup["blahface"].name
     end
 
+    should "not require snip attributes to give content" do
+      write_snip "test", "snip content"
+      assert_equal "snip content", @soup["test"].content
+    end
+
     should "take updated_at and created_at from file timestamps if not supplied" do
       @soup << {:name => "snip", :content => "whatever"}
       time = Time.parse("2010-11-04 14:56")

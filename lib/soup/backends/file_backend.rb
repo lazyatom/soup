@@ -23,6 +23,7 @@ class Soup
             content = data[0, attribute_start].strip
             attributes = default_attributes.merge(YAML.load(data[attribute_start, data.length]))
           else
+            content = data
             attributes = default_attributes
           end
           attributes.update(:content => content) if content && content.length > 0
