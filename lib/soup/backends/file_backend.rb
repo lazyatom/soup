@@ -10,26 +10,13 @@ class Soup
       end
 
       def names
-        snip_paths.map { |s| File.basename(s).split(".").first }
+        snip_paths.map { |s| snip_name_from_path(s) }
       end
 
       def load_snip(name)
-        path = snip_paths.find { |s| File.basename(s).split(".").first == name }
+        path = snip_paths.find { |s| snip_name_from_path(s) == name }
         if path
-          file = File.new(path)
-          data = file.read
-          default_attributes = {:name => name, :updated_at => file.mtime, :created_at => file.mtime}
-          if attribute_start = data.index("\n:")
-            content = data[0, attribute_start].strip
-            attributes = default_attributes.merge(YAML.load(data[attribute_start, data.length]))
-          else
-            content = data
-            attributes = default_attributes
-          end
-          attributes.update(:content => content) if content && content.length > 0
-          extension = File.extname(path).gsub(/^\./, '')
-          attributes.update(:extension => extension) if extension != "snip"
-          Snip.new(attributes, self)
+          load_snip_from_path(path, name)
         else
           nil
         end
@@ -55,12 +42,33 @@ class Soup
       end
 
       def all_snips
-        Dir[File.join(@base_path, "*")].map do |key|
-          load_snip(File.basename(key, ".snip"))
+        snip_paths.map do |path|
+          load_snip_from_path(path, snip_name_from_path(path))
         end
       end
 
       private
+
+      def snip_name_from_path(path)
+        File.basename(path).split(".").first
+      end
+
+      def load_snip_from_path(path, name)
+        file = File.new(path)
+        data = file.read
+        default_attributes = {:name => name, :updated_at => file.mtime, :created_at => file.mtime}
+        if attribute_start = data.index("\n:")
+          content = data[0, attribute_start].strip
+          attributes = default_attributes.merge(YAML.load(data[attribute_start, data.length]))
+        else
+          content = data
+          attributes = default_attributes
+        end
+        attributes.update(:content => content) if content && content.length > 0
+        extension = File.extname(path).gsub(/^\./, '')
+        attributes.update(:extension => extension) if extension != "snip"
+        Snip.new(attributes, self)
+      end
 
       def path_for(name, extension=nil)
         snip_extension = ".snip"
