@@ -54,6 +54,12 @@ class Soup
         end
       end
 
+      def all_snips
+        Dir[File.join(@base_path, "*")].map do |key|
+          load_snip(File.basename(key, ".snip"))
+        end
+      end
+
       private
 
       def path_for(name, extension=nil)
@@ -64,12 +70,6 @@ class Soup
 
       def snip_paths
         Dir[File.join(@base_path, "*")].select { |s| File.file?(s) }
-      end
-
-      def all_snips
-        Dir[File.join(@base_path, "*")].map do |key|
-          load_snip(File.basename(key, ".snip"))
-        end
       end
     end
   end

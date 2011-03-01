@@ -11,19 +11,16 @@ class Soup
 
       def method_missing(*args)
         @backends.each do |backend|
-          if result = backend.__send__(*args)
+          if result = backend.respond_to?(args.first) ? backend.__send__(*args) : nil
             return result
           end
         end
         nil
       end
 
-      private
-
       def all_snips
-        @backends.map { |b| b.send(:all_snips) }.flatten
+        @backends.map { |b| b.all_snips }.flatten
       end
-
     end
   end
 end

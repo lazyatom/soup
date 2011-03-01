@@ -10,7 +10,7 @@ class Soup
       end
 
       def method_missing(*args)
-        @backend.__send__(*args)
+        @backend.__send__(*args) if @backend.respond_to?(args.first)
       end
     end
   end
