@@ -64,6 +64,12 @@ of the snip
     assert_equal created_at.to_i, snip.created_at.to_i
   end
 
+  should "set the extension attribute if one is present" do
+    File.open(File.join(@base_path, "test_snip.snip.markdown"), "w") { |f| f.write "This is the content" }
+    snip = @soup["test_snip"]
+    assert_equal "markdown", snip.extension
+  end
+
   def path_for(name)
     File.join(@base_path, name + ".snip")
   end
