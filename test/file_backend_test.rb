@@ -70,6 +70,12 @@ of the snip
     assert_equal "markdown", snip.extension
   end
 
+  should "not ignore directories" do
+    FileUtils.mkdir(File.join(@base_path, "test"))
+    write_snip("test", "content")
+    assert_equal "content", @soup["test"].content
+  end
+
   def path_for(name)
     File.join(@base_path, name + ".snip")
   end

@@ -10,11 +10,11 @@ class Soup
       end
 
       def names
-        Dir[File.join(@base_path, "*")].map { |s| File.basename(s).split(".").first }
+        snip_paths.map { |s| File.basename(s).split(".").first }
       end
 
       def load_snip(name)
-        path = Dir[File.join(@base_path, "*")].find { |s| File.basename(s).split(".").first == name }
+        path = snip_paths.find { |s| File.basename(s).split(".").first == name }
         if path
           file = File.new(path)
           data = file.read
@@ -60,6 +60,10 @@ class Soup
         snip_extension = ".snip"
         snip_extension += ".#{extension}" if extension
         File.join(@base_path, name + snip_extension)
+      end
+
+      def snip_paths
+        Dir[File.join(@base_path, "*")].select { |s| File.file?(s) }
       end
 
       def all_snips
