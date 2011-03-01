@@ -8,28 +8,6 @@ class Soup
   autoload :Backends, 'soup/backends'
   autoload :Snip, 'soup/snip'
 
-  # You can access a default soup using this methods.
-
-  def self.default_instance #:nodoc:
-    @@instance ||= new
-  end
-
-  def self.[](*args)
-    default_instance[*args]
-  end
-
-  def self.<<(attributes)
-    default_instance << attributes
-  end
-
-  def self.with(*args)
-    default_instance.sieve(*args)
-  end
-
-  def self.destroy(*args)
-    default_instance.destroy(*args)
-  end
-
   # Get the soup ready!
   def initialize(backend=nil)
     @backend = backend || Soup::Backends::FileBackend.new
