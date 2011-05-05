@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    soup (1.0.5)
+    soup (1.0.7)
 
 GEM
   remote: http://rubygems.org/
