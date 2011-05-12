@@ -44,6 +44,10 @@ class Soup
     @backend.destroy(name)
   end
 
+  def all_snips
+    @backend.all_snips
+  end
+
   private
 
   def symbolize_keys(hash)

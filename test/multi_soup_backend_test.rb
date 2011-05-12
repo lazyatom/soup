@@ -70,4 +70,11 @@ context "A Soup with multiple backends" do
       assert_not_nil @soup_two["snip"]
     end
   end
+
+  should "return all snips" do
+    @soup_one << {:name => "alpha"}
+    @soup_two << {:name => "beta"}
+    assert_equal 2, @soup.all_snips.length
+    assert_equal %w(alpha beta), @soup.all_snips.map { |s| s.name }
+  end
 end
