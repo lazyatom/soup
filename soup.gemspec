@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.date = %q{2011-05-12}
   s.email = %q{james@lazyatom.com}
   s.extra_rdoc_files = ["README"]
-  s.files = ["Manifest", "Rakefile", "README", "test/file_backend_test.rb", "test/multi_soup_backend_test.rb", "test/snip_test.rb", "test/soup_test.rb", "test/test_helper.rb", "lib/soup/backends/base.rb", "lib/soup/backends/file_backend.rb", "lib/soup/backends/multi_soup.rb", "lib/soup/backends/read_only.rb", "lib/soup/backends/yaml_backend.rb", "lib/soup/backends.rb", "lib/soup/empty_class.rb", "lib/soup/snip.rb", "lib/soup.rb"]
+  s.files = ["Manifest", "Rakefile", "README", "test/file_backend_test.rb", "test/multi_soup_backend_test.rb", "test/snip_test.rb", "test/soup_test.rb", "test/test_helper.rb", "lib/soup", "lib/soup/backends", "lib/soup/backends/base.rb", "lib/soup/backends/file_backend.rb", "lib/soup/backends/multi_soup.rb", "lib/soup/backends/read_only.rb", "lib/soup/backends/yaml_backend.rb", "lib/soup/backends.rb", "lib/soup/empty_class.rb", "lib/soup/snip.rb", "lib/soup.rb"]
   s.homepage = %q{http://lazyatom.com}
   s.rdoc_options = ["--main", "README"]
   s.require_paths = ["lib"]
