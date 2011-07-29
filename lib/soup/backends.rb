@@ -11,5 +11,6 @@ class Soup
     autoload :MultiSoup, 'soup/backends/multi_soup'
     autoload :ReadOnly, 'soup/backends/read_only'
     autoload :FileBackend, 'soup/backends/file_backend'
+    autoload :Memory, 'soup/backends/memory'
   end
 end

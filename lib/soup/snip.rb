@@ -23,11 +23,19 @@ class Soup
       other.is_a?(Snip) && matching_attributes(other)
     end
 
+    def eql?(other)
+      self == other
+    end
+
     def inspect
       keys = @attributes.keys.dup
       keys.delete(:name)
       attrs = keys.inject([[:name, self.name]]) { |a, key| a + [[key, @attributes[key]]] }
       "<Snip #{attrs.map { |(key,value)| "#{key}:#{value.inspect}"}.join(" ")}>"
+    end
+
+    def hash
+      @attributes.hash
     end
 
     def respond_to?(method)

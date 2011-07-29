@@ -7,10 +7,14 @@ require 'fileutils'
 class Soup
   autoload :Backends, 'soup/backends'
   autoload :Snip, 'soup/snip'
+  autoload :TestHelper, 'soup/test_helper'
+
+  class BackendIncompatibleError < StandardError; end
 
   # Get the soup ready!
   def initialize(backend=nil)
     @backend = backend || Soup::Backends::FileBackend.new
+    check_backend_for_compatibility
     @backend.prepare
   end
 
@@ -49,6 +53,12 @@ class Soup
   end
 
   private
+
+  def check_backend_for_compatibility
+    methods = [:all_snips, :load_snip, :save_snip, :prepare, :destroy]
+    ok = methods.inject(true) { |ok, method| ok && @backend.respond_to?(method) }
+    raise BackendIncompatibleError unless ok
+  end
 
   def symbolize_keys(hash)
     hash.inject({}) { |h,(k,v)| h[k.to_sym] = v; h }

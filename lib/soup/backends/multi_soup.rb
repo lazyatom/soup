@@ -18,6 +18,10 @@ class Soup
         nil
       end
 
+      def respond_to?(method)
+        super || @backends.inject(false) { |ok, b| ok || b.respond_to?(method) }
+      end
+
       def all_snips
         @backends.map { |b| b.all_snips }.flatten
       end
