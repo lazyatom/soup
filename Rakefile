@@ -21,7 +21,7 @@ spec = Gem::Specification.new do |s|
 
   # Change these as appropriate
   s.name              = "soup"
-  s.version           = "1.0.9"
+  s.version           = "1.0.10"
   s.summary           = "A super-simple data store"
   s.author            = "James Adam"
   s.email             = "james@lazyatom.com"
@@ -61,6 +61,18 @@ end
 
 task :package => :gemspec
 
+# Generate documentation
+Rake::RDocTask.new do |rd|
+  rd.main = "README"
+  rd.rdoc_files.include("README", "lib/**/*.rb")
+  rd.rdoc_dir = "rdoc"
+end
+
+desc 'Clear out RDoc and generated packages'
+task :clean => [:clobber_rdoc, :clobber_package] do
+  rm "#{spec.name}.gemspec"
+end
+
 desc 'Tag the repository in git with gem version number'
 task :tag => [:gemspec, :package] do
   if `git diff --cached`.empty?
@@ -77,19 +89,7 @@ task :tag => [:gemspec, :package] do
   end
 end
 
-desc 'Release the gem to gemcutter and tag the repo'
-task :release => [:tag] do
+desc "Tag and publish the gem to rubygems.org"
+task :publish => :tag do
   `gem push pkg/#{spec.name}-#{spec.version}.gem`
-end
-
-# Generate documentation
-Rake::RDocTask.new do |rd|
-  rd.main = "README"
-  rd.rdoc_files.include("README", "lib/**/*.rb")
-  rd.rdoc_dir = "rdoc"
-end
-
-desc 'Clear out RDoc and generated packages'
-task :clean => [:clobber_rdoc, :clobber_package] do
-  rm "#{spec.name}.gemspec"
 end
