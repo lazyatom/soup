@@ -2,7 +2,7 @@ require "test_helper"
 
 context "A Soup with multiple backends" do
   setup do
-    @basic_soup_backend_one = Soup::Backends::YAMLBackend.new(File.join(@base_path, "soup_one"))
+    @basic_soup_backend_one = Soup::Backends::Memory.new
     @basic_soup_backend_two = Soup::Backends::FileBackend.new(File.join(@base_path, "soup_two"))
     @soup_one = Soup.new(@basic_soup_backend_one)
     @soup_two = Soup.new(@basic_soup_backend_two)

@@ -1,5 +1,5 @@
 require "test_helper"
-require "ftools"
+require "fileutils"
 require "time"
 
 context "The file-based backend" do

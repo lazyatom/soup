@@ -29,7 +29,7 @@ def each_backend(&block)
   backends = [
     yaml_backend = Soup::Backends::YAMLBackend.new(base_path),
     file_backend = Soup::Backends::FileBackend.new(base_path),
-    Soup::Backends::MultiSoup.new(yaml_backend),
+    Soup::Backends::MultiSoup.new(file_backend),
     Soup::Backends::Memory.new
   ]
   backends.each do |backend|

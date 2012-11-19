@@ -1,5 +1,5 @@
-# require 'rubygems'
-$LOAD_PATH.unshift "/Users/james/Code/lazyatom/jtest/lib"
+require 'rubygems'
+require 'bundler/setup'
 require 'kintama'
 require 'soup'
 

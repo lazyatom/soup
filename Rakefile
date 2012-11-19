@@ -1,6 +1,6 @@
 require "rubygems"
-require "rake/gempackagetask"
-require "rake/rdoctask"
+require "rubygems/package_task"
+require "rdoc/task"
 
 task :default => :test
 
@@ -18,7 +18,7 @@ end
 #   http://rubygems.org/read/chapter/20
 #
 spec = Gem::Specification.new do |s|
-  
+
   # Change these as appropriate
   s.name              = "soup"
   s.version           = "1.0.9"
@@ -33,15 +33,15 @@ spec = Gem::Specification.new do |s|
 
   # Add any extra files to include in the gem
   s.files             = %w(Manifest Rakefile README) + Dir.glob("{test,lib}/**/*")
-   
+
   s.require_paths     = ["lib"]
-  
+
   # If you want to depend on other gems, add them here, along with any
   # relevant versions
   # s.add_dependency("some_other_gem", "~> 0.1.0")
-  
+
   # If your tests use any gems, include them here
-  s.add_development_dependency("kintama", ">= 0.1.8")
+  s.add_development_dependency("kintama", ">= 0.1.11")
   s.add_development_dependency("rake")
 end
 
@@ -49,7 +49,7 @@ end
 # .gemspec file, which is useful if something (i.e. GitHub) will
 # be automatically building a gem for this project. If you're not
 # using GitHub, edit as appropriate.
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
 end
 

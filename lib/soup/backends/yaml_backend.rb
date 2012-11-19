@@ -36,7 +36,7 @@ class Soup
         File.open(path_for(attributes[:name]), 'w') do |f|
           attributes_without_content = attributes.dup
           f.write attributes_without_content.delete(:content)
-          f.write attributes_without_content.to_yaml.gsub(/^---\s/, ATTRIBUTE_TOKEN) if attributes_without_content.any?
+          f.write attributes_without_content.to_yaml.gsub(/^---\s/, ATTRIBUTE_TOKEN + "\n") if attributes_without_content.any?
         end
         Snip.new(attributes, self)
       end
