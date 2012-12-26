@@ -11,8 +11,9 @@ class Soup
 
       def method_missing(*args)
         @backends.each do |backend|
-          if result = (backend.respond_to?(args.first) ? backend.__send__(*args) : nil)
-            return result
+          if backend.respond_to?(args.first)
+            result = backend.__send__(*args)
+            return result if result
           end
         end
         nil

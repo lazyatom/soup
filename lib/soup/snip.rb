@@ -27,10 +27,6 @@ class Soup
       self == other
     end
 
-    def !=(other)
-      !eql?(other)
-    end
-
     def inspect
       keys = @attributes.keys.dup
       keys.delete(:name)
