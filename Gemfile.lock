@@ -16,3 +16,6 @@ DEPENDENCIES
   kintama (>= 0.1.11)
   rake
   soup!
+
+BUNDLED WITH
+   1.11.2
