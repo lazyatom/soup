@@ -35,4 +35,19 @@ context "A snip" do
       assert_equal Soup::Snip.new({:name => 'test'}, nil), @soup['test']
     end
   end
+
+  context "respond_to?" do
+    should "be true when snip has given attribute" do
+      assert @snip.respond_to?(:name)
+    end
+
+    should "be false is snip doesn't have given attribute" do
+      assert !@snip.respond_to?(:blah)
+    end
+
+    should "allow comparison using symbols or strings" do
+      assert @snip.respond_to?(:name)
+      assert @snip.respond_to?('name')
+    end
+  end
 end

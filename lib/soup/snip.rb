@@ -39,7 +39,7 @@ class Soup
     end
 
     def respond_to?(method, include_all=false)
-      @attributes.keys.include?(method.to_s)
+      @attributes.keys.any? { |k| k.to_s == method.to_s }
     end
 
     def method_missing(method, *args)
