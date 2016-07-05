@@ -38,7 +38,7 @@ class Soup
       @attributes.hash
     end
 
-    def respond_to?(method)
+    def respond_to?(method, include_all=false)
       @attributes.keys.include?(method.to_s)
     end
 
