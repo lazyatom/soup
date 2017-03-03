@@ -54,20 +54,23 @@ class Soup
       end
 
       def load_snip_from_path(path, name)
-        file = File.new(path)
-        data = file.read
-        default_attributes = {:name => name, :updated_at => file.mtime, :created_at => file.mtime}
-        if attribute_start = data.index("\n:")
-          content = data[0, attribute_start].strip
-          attributes = default_attributes.merge(YAML.load(data[attribute_start, data.length]))
-        else
-          content = data
-          attributes = default_attributes
+        snip = nil
+        File.open(path) do |file|
+          data = file.read
+          default_attributes = {:name => name, :updated_at => file.mtime, :created_at => file.mtime}
+          if attribute_start = data.index("\n:")
+            content = data[0, attribute_start].strip
+            attributes = default_attributes.merge(YAML.load(data[attribute_start, data.length]))
+          else
+            content = data
+            attributes = default_attributes
+          end
+          attributes.update(:content => content) if content && content.length > 0
+          extension = File.extname(path).gsub(/^\./, '')
+          attributes.update(:extension => extension) if extension != "snip"
+          snip = Snip.new(attributes, self)
         end
-        attributes.update(:content => content) if content && content.length > 0
-        extension = File.extname(path).gsub(/^\./, '')
-        attributes.update(:extension => extension) if extension != "snip"
-        Snip.new(attributes, self)
+        snip
       end
 
       def path_for(name, extension=nil)
