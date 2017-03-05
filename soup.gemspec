@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.date = "2017-03-05"
   s.email = "james@lazyatom.com".freeze
   s.extra_rdoc_files = ["README".freeze]
-  s.files = ["Manifest".freeze, "README".freeze, "Rakefile".freeze, "lib/soup.rb".freeze, "lib/soup/backends.rb".freeze, "lib/soup/backends/base.rb".freeze, "lib/soup/backends/file_backend.rb".freeze, "lib/soup/backends/memory.rb".freeze, "lib/soup/backends/multi_soup.rb".freeze, "lib/soup/backends/read_only.rb".freeze, "lib/soup/backends/yaml_backend.rb".freeze, "lib/soup/empty_class.rb".freeze, "lib/soup/snip.rb".freeze, "lib/soup/test_helper.rb".freeze, "test/file_backend_test.rb".freeze, "test/multi_soup_backend_test.rb".freeze, "test/snip_test.rb".freeze, "test/soup_test.rb".freeze, "test/test_helper.rb".freeze, "test/test_helper_test.rb".freeze]
+  s.files = ["Manifest".freeze, "README".freeze, "Rakefile".freeze, "lib/soup".freeze, "lib/soup.rb".freeze, "lib/soup/backends".freeze, "lib/soup/backends.rb".freeze, "lib/soup/backends/base.rb".freeze, "lib/soup/backends/file_backend.rb".freeze, "lib/soup/backends/memory.rb".freeze, "lib/soup/backends/multi_soup.rb".freeze, "lib/soup/backends/read_only.rb".freeze, "lib/soup/backends/yaml_backend.rb".freeze, "lib/soup/empty_class.rb".freeze, "lib/soup/snip.rb".freeze, "lib/soup/test_helper.rb".freeze, "test/file_backend_test.rb".freeze, "test/multi_soup_backend_test.rb".freeze, "test/snip_test.rb".freeze, "test/soup_test.rb".freeze, "test/test_helper.rb".freeze, "test/test_helper_test.rb".freeze]
   s.homepage = "http://lazyatom.com".freeze
   s.rdoc_options = ["--main".freeze, "README".freeze]
   s.rubygems_version = "2.5.2".freeze
