@@ -6,8 +6,8 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
-    kintama (0.1.11)
-    rake (10.1.0)
+    kintama (0.2)
+    rake (13.0.6)
 
 PLATFORMS
   ruby
@@ -18,4 +18,4 @@ DEPENDENCIES
   soup!
 
 BUNDLED WITH
-   1.13.7
+   2.3.15
