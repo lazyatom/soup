@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: soup 1.0.14 ruby lib
+# stub: soup 1.0.15 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "soup".freeze
-  s.version = "1.0.14"
+  s.version = "1.0.15"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
