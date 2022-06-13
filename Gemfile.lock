@@ -6,6 +6,7 @@ PATH
 GEM
   remote: http://rubygems.org/
   specs:
+    byebug (11.1.3)
     kintama (0.2)
     rake (13.0.6)
 
@@ -13,6 +14,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  byebug
   kintama (>= 0.1.11)
   rake
   soup!

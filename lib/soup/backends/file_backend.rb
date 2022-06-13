@@ -60,7 +60,7 @@ class Soup
           default_attributes = {:name => name, :updated_at => file.mtime, :created_at => file.mtime}
           if attribute_start = data.index("\n:")
             content = data[0, attribute_start].strip
-            attributes = default_attributes.merge(YAML.load(data[attribute_start, data.length]))
+            attributes = default_attributes.merge(load_from_yaml(data[attribute_start, data.length]))
           else
             content = data
             attributes = default_attributes
@@ -81,6 +81,14 @@ class Soup
 
       def snip_paths
         Dir[File.join(@base_path, "*")].select { |s| File.file?(s) }
+      end
+
+      def load_from_yaml(yaml)
+        if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new('3.1')
+          YAML.load(yaml, permitted_classes: [Time, Symbol])
+        else
+          YAML.load(yaml)
+        end
       end
     end
   end

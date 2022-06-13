@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<kintama>.freeze, [">= 0.1.11"])
       s.add_development_dependency(%q<rake>.freeze, [">= 0"])
+      s.add_development_dependency(%q<byebug>.freeze)
     else
       s.add_dependency(%q<kintama>.freeze, [">= 0.1.11"])
       s.add_dependency(%q<rake>.freeze, [">= 0"])
